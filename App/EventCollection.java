@@ -11,7 +11,11 @@ public class EventCollection {
     public ArrayList<Event> getEventsInRange(Date d1, Date d2)
     {
         ArrayList<Event> output = new ArrayList<Event>();
-        for ()
+        for (Event e : events) {
+            if ( e.withinRange(d1, d2) ) {
+                output.add(e);
+            }
+        }
         return output;
     }
 
