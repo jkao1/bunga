@@ -19,4 +19,16 @@ public class Event {
         this.description = description;
     }
 
+    public boolean withinRange(Date d1, Date d2)
+    {
+        return date.after( d1 ) && date.before( d2 );
+    }
+
+    public int compareTo(Event e) {
+        if ( date.compareTo( e.date ) == 0 ) {
+            return name.compareTo( e.name );
+        } else {
+            return date.compareTo( e.date );
+        }
+    }
 }
