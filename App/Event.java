@@ -1,21 +1,21 @@
 import java.util.*;
 
 public class Event {
-  
-    private Date start;
+
+    private Date date;
     private int duration; // in minutes
     private String name, description;
     private Location loc;
     private int color;
 
-    public Event(String name) {
+    public Event(String name, Date date) {
         this.name = name;
+        this.date = date;
     }
 
-    public Event(Date start, int duration, String name, String description) {
-        this.start = start;
+    public Event(String name, Date date, int duration, String description) {
+        this(name, date);
         this.duration = duration;
-        this.name = name;
         this.description = description;
     }
 
