@@ -9,7 +9,7 @@ boolean rectOver = false;
 boolean circleOver = false;
 
 void setup() {
-  size(640, 360);
+  size(960, 600);
   rectColor = color(0);
   rectHighlight = color(51);
   circleColor = color(255);
