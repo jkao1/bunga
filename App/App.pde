@@ -1,26 +1,60 @@
-int rectX, rectY;      // Position of square button
-int circleX, circleY;  // Position of circle button
-int rectSize = 90;     // Diameter of rect
-int circleSize = 93;   // Diameter of circle
-color rectColor, circleColor, baseColor;
-color rectHighlight, circleHighlight;
-color currentColor;
-boolean rectOver = false;
-boolean circleOver = false;
+import java.util.*;
+
+Calendar cal;
+int month;
+int startDay;
+static int[] monthKeyVals = {1, 4, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6};
+int dayYCoords, dayXCoords;
 
 void setup() {
+  cal = new Calendar();
+  month = cal.MONTH;
+  dayYCoords = 0;
+  dayXCoords = 0;
   size(960, 600);
-  rectColor = color(0);
-  rectHighlight = color(51);
-  circleColor = color(255);
-  circleHighlight = color(204);
-  baseColor = color(102);
-  currentColor = baseColor;
-  circleX = width/2+circleSize/2+10;
-  circleY = height/2;
-  rectX = width/2-rectSize-10;
-  rectY = height/2-rectSize/2;
-  ellipseMode(CENTER);
+  startDay = findFirstDay(month);
+  //months with 31 days
+  if(month % 2 == 0){
+    int date = startDay;
+    int count = 0
+    //previous month
+    for(int n = 0; n < startDay; n++){
+      drawDay(dayXCoords, dayYCoords, 31 - n);
+      dayXCoords += 137;
+      count++;
+      if(count % 7 == 0){
+        dayYCoords += 80;
+      }
+    }
+    //this month
+    for(int i = 1; i <= 31; i++){
+      drawDay(dayXCoords, dayYCoords, i);
+      dayXCoords += 137;
+      count++;
+      if(count % 7 == 0){
+        dayYCoords += 80;
+      }
+    }
+    //next month
+    int daysLeft = 42 - (31 + startDay);
+    for(int p = 0; p <= daysLeft; p++){
+      drawDay(dayXCoords, dayYCoords, p);
+      dayXCoords += 137;
+      count++;
+      if(count % 7 == 0){
+        dayYCoords += 80;
+      }
+    }
+    //don't forget to account for leap year !
+  }else if(month == 1)
+}
+
+int findFirstDay(int m){
+  int d = (((cal.YEAR % 100) / 4) + 1 + monthKeyVals[month] + 6 + (cal.YEAR % 100)) % 7;  
+  if(cal.YEAR % 400){
+    d = d - 1;
+  }
+  return d;
 }
 
 void draw() {
@@ -53,33 +87,5 @@ void update(int x, int y) {
     circleOver = false;
   } else {
     circleOver = rectOver = false;
-  }
-}
-
-void mousePressed() {
-  if (circleOver) {
-    currentColor = circleColor;
-  }
-  if (rectOver) {
-    currentColor = rectColor;
-  }
-}
-
-boolean overRect(int x, int y, int width, int height)  {
-  if (mouseX >= x && mouseX <= x+width && 
-      mouseY >= y && mouseY <= y+height) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-boolean overCircle(int x, int y, int diameter) {
-  float disX = x - mouseX;
-  float disY = y - mouseY;
-  if (sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
-    return true;
-  } else {
-    return false;
   }
 }
