@@ -1,13 +1,12 @@
-import java.util.*;
+import java.util.Calendar;
 
 Calendar cal;
 int month;
 int startDay;
-static int[] monthKeyVals = {1, 4, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6};
 int dayYCoords, dayXCoords;
 
 void setup() {
-  cal = new Calendar();
+  cal = new GregorianCalendar();
   month = cal.MONTH;
   dayYCoords = 0;
   dayXCoords = 0;
@@ -16,7 +15,7 @@ void setup() {
   //months with 31 days
   if(month % 2 == 0){
     int date = startDay;
-    int count = 0
+    int count = 0;
     //previous month
     for(int n = 0; n < startDay; n++){
       drawDay(dayXCoords, dayYCoords, 31 - n);
@@ -46,46 +45,16 @@ void setup() {
       }
     }
     //don't forget to account for leap year !
-  }else if(month == 1)
+  }else if(month == 1) {}
 }
 
-int findFirstDay(int m){
+int findFirstDay(int m) {
+  int[] monthKeyVals = {1, 4, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6};
   int d = (((cal.YEAR % 100) / 4) + 1 + monthKeyVals[month] + 6 + (cal.YEAR % 100)) % 7;  
-  if(cal.YEAR % 400){
+  if(cal.YEAR % 400 == 0){
     d = d - 1;
   }
   return d;
 }
 
-void draw() {
-  update(mouseX, mouseY);
-  background(currentColor);
-  
-  if (rectOver) {
-    fill(rectHighlight);
-  } else {
-    fill(rectColor);
-  }
-  stroke(255);
-  rect(rectX, rectY, rectSize, rectSize);
-  
-  if (circleOver) {
-    fill(circleHighlight);
-  } else {
-    fill(circleColor);
-  }
-  stroke(0);
-  ellipse(circleX, circleY, circleSize, circleSize);
-}
-
-void update(int x, int y) {
-  if ( overCircle(circleX, circleY, circleSize) ) {
-    circleOver = true;
-    rectOver = false;
-  } else if ( overRect(rectX, rectY, rectSize, rectSize) ) {
-    rectOver = true;
-    circleOver = false;
-  } else {
-    circleOver = rectOver = false;
-  }
-}
+void drawDay(int x, int y, int z) {}
