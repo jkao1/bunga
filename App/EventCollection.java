@@ -8,12 +8,12 @@ public class EventCollection {
         events = new ArrayList<Event>();
     }
 
-    public ArrayList<Event> getEventsInRange(Date d1, Date d2)
+    public ArrayList<Day> getEventsInRange(Date d1, Date d2)
     {
-        ArrayList<Event> output = new ArrayList<Event>();
+        ArrayList<Day> output = new ArrayList<Day>();
         for (Event e : events) {
             if ( e.withinRange(d1, d2) ) {
-                output.add(e);
+                //output.add(e);
             }
         }
         return output;
