@@ -1,18 +1,19 @@
 import java.util.Calendar;
 
-final int SCREENWIDTH, SCREENHEIGHT;
+final int SCREENWIDTH = 960;
+final int SCREENHEIGHT = 600;
 
 Calendar cal;
-
 int year, month, day, dayOfWeek;
 int dayYCoords, dayXCoords;
 EventCollection events;
 ArrayList<Day> days;
+String[] months = {"January", "February", "March", "April", "May", "June", 
+                   "July", "August", "September", "October", "November", "December"};
+String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+                       "Saturday"};
 
 void setup() {
-  
-  SCREENWIDTH = 960;
-  SCREENHEIGHT = 600;
   cal = new GregorianCalendar();
   year = cal.YEAR;
   month = cal.MONTH;
@@ -20,25 +21,36 @@ void setup() {
   dayOfWeek = cal.DAY_OF_WEEK;
   dayYCoords = 0;
   dayXCoords = 0;
-  size( SCREENWIDTH, SCREENHEIGHT );
+  surface.setSize( SCREENWIDTH, SCREENHEIGHT );
+  
+  rect(0, 0, SCREENWIDTH, 40);
+  
+  rect(0, 40, SCREENWIDTH, 80);
+  text(months[month] + " " + year, 10, 47);
+  
   events = new EventCollection();
   if(month % 2 == 0){
     days = events.getEventsInRange(new Date(year, month-1, 30 - dayOfWeek + 1), 
                                    new Date(year, month+1, 42 - (31 + dayOfWeek)));
   }else if(month == 1){
     if(year % 400 == 0){
-      days = events.getEventsInRange(new Date(year, month-1, 31 - dayOfWeek + 1)), new Date(year, month+1, 42 - (29 + dayOfWeek));
+      days = events.getEventsInRange(new Date(year, month-1, 31 - dayOfWeek + 1), 
+                                     new Date(year, month+1, 42 - (29 + dayOfWeek)));
     }else{
-      days = events.getEventsInRange(new Date(year, month-1, 31 - dayOfWeek + 1)), new Date(year, month+1, 42 - (28 + dayOfWeek));
+      days = events.getEventsInRange(new Date(year, month-1, 31 - dayOfWeek + 1), 
+                                       new Date(year, month+1, 42 - (28 + dayOfWeek)));
     }
   }else{
-    days = events.getEventsInRange(new Date(year, month-1, 31 - dayOfWeek + 1)), new Date(year, month+1, 42 - (30 + dayOfWeek));
+      days = events.getEventsInRange(new Date(year, month-1, 31 - dayOfWeek + 1), 
+                                     new Date(year, month+1, 42 - (30 + dayOfWeek)));
   }
   
   for(int x = 0; x < SCREENWIDTH; x += SCREENWIDTH / 7) {
-    day.dsplay(x, y);
-    
+    for(int y = 120; x <SCREENHEIGHT; y += SCREENHEIGHT / 6){
+      day.display(x, y);
+    }
   }
+}
     
                                  
   
@@ -77,7 +89,6 @@ void setup() {
     //don't forget to account for leap year !
   }else if(month == 1) {}
   */
-}
 
 int findDay(int m) {
   int[] monthKeyVals = {1, 4, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6};
