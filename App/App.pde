@@ -17,6 +17,7 @@ void setup() {
   surface.setSize( CAL_WIDTH, 120 + CAL_HEIGHT );
   Calendar calendar = Calendar.getInstance();               
   SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/YYYY");
+  drawButtonLayouts();
   calendar.set(Calendar.MONTH,Calendar.JUNE);
   calendar.set(Calendar.DAY_OF_MONTH,1);          
   int day = (Calendar.SUNDAY-calendar.get(Calendar.DAY_OF_WEEK));            
@@ -33,31 +34,30 @@ void setup() {
   startDay = startDate.getDate();
 }
 
+//draws buttons to choose layout
+void drawButtonLayouts(){
+  fill(0);
+  font = loadFont("ArialHebrew-120.vlw");
+  textFont(font, 20);
+  rect(CAL_WIDTH / 2 - 120, 30, 30, 60, 5, 0, 0, 5);
+  text("Day", 25, CAL_WIDTH / 2 - 120 + 20);
+  rect(CAL_WIDTH / 2 - 60, 30, 30, 60);
+  text("Week", 25, CAL_WIDTH / 2 - 60 + 20);
+  rect(CAL_WIDTH / 2, 30, 30, 60);
+  text("Month", 25, CAL_WIDTH / 2 + 20); 
+  rect(CAL_WIDTH / 2 + 60, 30, 30, 60, 0, 5, 5, 0);
+  text("Year", 25, CAL_WIDTH / 2 + 60 + 20);
+  fill(0);
+}
+
 //draws days according to actual day
 void drawDaysInMonth(int y, int m, int d) {
   Calendar testCal = new GregorianCalendar( y, m, d );
-  /*
-  for (int i = Calendar.DAY_OF_WEEK; i >= 0; i++){
-    Day day;
-    if(Calendar.MONTH == 2){
-      if(Calendar.YEAR % 400 == 0){
-        day = new Day(y, m - 1, 29 - i);
-      }else{
-        day = new Day(y, m - 1, 28 - i);
-      }
-    }else if(Calendar.MONTH % 2 == 0){
-      day = new Day(y, m - 1, 30 - i);
-    }else{
-      day = new Day(y, m - 1, 31 - i);
-    }
-    day.display(i, 0);
-  }
-    */
-    boolean switched = false;
-    int col = 150;
+  
+  boolean switched = false;
+  int col = 150;
   for (int i = 0; i < 42; i++) {
     Day day = new Day( testCal.get(Calendar.YEAR), testCal.get(Calendar.MONTH), testCal.get(Calendar.DATE) );
-    
     if ( day.getDate() == 1 ) {
       if (switched) {
         col = 150;
@@ -70,6 +70,7 @@ void drawDaysInMonth(int y, int m, int d) {
     testCal.add( Calendar.DATE, 1 );
   }
 }
+
 void draw() {
   drawDaysInMonth( startYear, startMonth, startDay );
 }
