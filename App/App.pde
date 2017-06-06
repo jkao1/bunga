@@ -1,8 +1,8 @@
 import java.util.*;
 import java.text.*;
 
-final int SCREENWIDTH = 150 * 7;
-final int SCREENHEIGHT = 720;
+final int CAL_WIDTH = 150 * 7;
+final int CAL_HEIGHT = 660;
 
 Calendar c;
 EventCollection events;
@@ -14,7 +14,7 @@ String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "
                        "Saturday"};
 
 void setup() {
-  surface.setSize( SCREENWIDTH, SCREENHEIGHT );
+  surface.setSize( CAL_WIDTH, 120 + CAL_HEIGHT );
   Calendar calendar = Calendar.getInstance();               
   SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/YYYY");
   calendar.set(Calendar.MONTH,Calendar.JUNE);
