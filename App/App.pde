@@ -1,7 +1,7 @@
 import java.util.*;
 import java.text.*;
 
-final int SCREENWIDTH = 1040;
+final int SCREENWIDTH = 150 * 7;
 final int SCREENHEIGHT = 720;
 
 Calendar c;
@@ -71,8 +71,5 @@ void drawDaysInMonth(int y, int m, int d) {
   }
 }
 void draw() {
-  //drawDaysInMonth( 4, 4, 4);
   drawDaysInMonth( startYear, startMonth, startDay );
 }
-
-void drawDay(int x, int y, int z) {}

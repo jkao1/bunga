@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Event {
 
-    private Date date;
+    private int year, month, date;
     private int duration; // in minutes
     private String name, description;
     private Location loc;
@@ -11,7 +11,9 @@ public class Event {
     public Event(String name, Date date)
     {
         this.name = name;
-        this.date = date;
+        this.year = date.getYear();
+        this.month = date.getMonth();
+        this.date = date.getDate();
     }
 
     public Event(String name, Date date, int duration, String description)
@@ -20,17 +22,10 @@ public class Event {
         this.duration = duration;
         this.description = description;
     }
-
-    public boolean withinRange(Date d1, Date d2) {
-        return date.after(d1) && date.before(d2);
+    
+    public boolean onDate(Date d) {
+        return year == d.getYear() && month == d.getMonth() && date == d.getDate();
     }
 
-    public int compareTo(Event e) {
-        if ( date.compareTo( e.date ) == 0 ) {
-            return name.compareTo( e.name );
-        } else {
-            return date.compareTo( e.date );
-        }
-    }
 
 }

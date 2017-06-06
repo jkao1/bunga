@@ -1,4 +1,7 @@
 import java.util.*;
+
+PFont font;
+
 class Day {
 
   int year, month, date;
@@ -19,7 +22,8 @@ class Day {
       ypos = ((i / 7) * (SCREENHEIGHT) / 6);
       rect(xpos, ypos, SCREENWIDTH / 7, SCREENHEIGHT / 6);
       fill(col);
-      textSize(20);
+      font = loadFont("ArialHebrew-120.vlw");
+      textFont(font, 20);
       text(Integer.toString(date), xpos + 20, ypos + 30);
       fill(255);
       
