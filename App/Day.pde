@@ -1,26 +1,24 @@
 import java.util.*;
 class Day {
 
-  Date date;
+  int year, month, date;
+  int xpos, ypos;
   EventCollection events;
   
-  Day(Date date) {
+  Day(int year, int month, int date) {
+    this.year = year;
+    this.month = month;
     this.date = date;
+  }
+  
+  void display(int i) {
+    xpos = (i % 7) * SCREENWIDTH / 7;
+    ypos = (i / 7) * SCREENHEIGHT / 6;
+    rect(xpos, ypos, SCREENWIDTH / 7, SCREENHEIGHT / 6);
   }
 
   void addEvent(Event e) {
     events.add(e);
   }
 
-  int compareTo(Day d) {
-    return date.compareTo(d.date);
-  }
-  
-  void display(int x, int y){
-    rect(x, y, Calendar.SCREENWIDTH, Calendar.SCREENHEIGHT);
-    fill(255);
-    text((String)date.getDate(), x+10, y+10);
-  }
-   
-  
 }
