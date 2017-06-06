@@ -1,4 +1,7 @@
 import java.util.*;
+
+PFont font;
+
 class Day {
 
   int year, month, date;
@@ -12,14 +15,15 @@ class Day {
     events = new EventCollection();
   }
   
-  void display(int i, int layout) {
+  void display(int i, int layout, int col) {
       //for month layout
     if(layout == 0){
-      xpos = (i % 7) * SCREENWIDTH / 7;
-      ypos = 120 + ((i / 7) * (SCREENHEIGHT - 120) / 6);
-      rect(xpos, ypos, SCREENWIDTH / 7, SCREENHEIGHT / 6);
-      fill(50);
-      textSize(20);
+      xpos = (i % 7) * CAL_WIDTH / 7;
+      ypos = 120 + ((i / 7) * (CAL_HEIGHT) / 6);
+      rect(xpos, ypos, CAL_WIDTH / 7, CAL_HEIGHT / 6);
+      fill(col);
+      font = loadFont("ArialHebrew-120.vlw");
+      textFont(font, 20);
       text(Integer.toString(date), xpos + 20, ypos + 30);
       fill(255);
       
@@ -34,6 +38,10 @@ class Day {
 
   void addEvent(Event e) {
     events.add(e);
+  }
+  
+  int getDate() {
+    return date;
   }
 
 }
