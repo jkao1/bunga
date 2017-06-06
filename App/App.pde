@@ -7,6 +7,7 @@ final int SCREENHEIGHT = 720;
 Calendar c;
 EventCollection events;
 ArrayList<Day> days;
+int startYear, startMonth, startDay;
 String[] months = {"January", "February", "March", "April", "May", "June", 
                    "July", "August", "September", "October", "November", "December"};
 String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
@@ -26,12 +27,16 @@ void setup() {
   }
   // calendar is now at first Sunday of the month
   calendar.add(Calendar.DAY_OF_MONTH, - 7);
-  Date start = calendar.getTime();
-  drawDaysInMonth( start.getYear(), start.getMonth(), start.getDate());
+  Date startDate = calendar.getTime();
+  startYear = startDate.getYear();
+  startMonth = startDate.getMonth();
+  startDay = startDate.getDate();
 }
 
 //draws days according to actual day
 void drawDaysInMonth(int y, int m, int d) {
+  Calendar testCal = new GregorianCalendar( y, m, d );
+  /*
   for (int i = Calendar.DAY_OF_WEEK; i >= 0; i++){
     Day day;
     if(Calendar.MONTH == 2){
@@ -47,14 +52,27 @@ void drawDaysInMonth(int y, int m, int d) {
     }
     day.display(i, 0);
   }
+    */
+    boolean switched = false;
+    int col = 150;
+  for (int i = 0; i < 42; i++) {
+    Day day = new Day( testCal.get(Calendar.YEAR), testCal.get(Calendar.MONTH), testCal.get(Calendar.DATE) );
     
-  for (int i = 0; i < 20; i++) {
-    Day day = new Day( y, m, d + i );
-    day.display(i, 0);
+    if ( day.getDate() == 1 ) {
+      if (switched) {
+        col = 150;
+      } else {
+        col = 0;
+        switched = true;
+      }
+    }
+    day.display(i, 0, col); // position i, layout 0, color 0
+    testCal.add( Calendar.DATE, 1 );
   }
 }
 void draw() {
-  drawDaysInMonth( 4, 4, 4);
+  //drawDaysInMonth( 4, 4, 4);
+  drawDaysInMonth( startYear, startMonth, startDay );
 }
 
 void drawDay(int x, int y, int z) {}

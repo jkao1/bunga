@@ -12,13 +12,13 @@ class Day {
     events = new EventCollection();
   }
   
-  void display(int i, int layout) {
+  void display(int i, int layout, int col) {
       //for month layout
     if(layout == 0){
       xpos = (i % 7) * SCREENWIDTH / 7;
-      ypos = 120 + ((i / 7) * (SCREENHEIGHT - 120) / 6);
+      ypos = ((i / 7) * (SCREENHEIGHT) / 6);
       rect(xpos, ypos, SCREENWIDTH / 7, SCREENHEIGHT / 6);
-      fill(50);
+      fill(col);
       textSize(20);
       text(Integer.toString(date), xpos + 20, ypos + 30);
       fill(255);
@@ -34,6 +34,10 @@ class Day {
 
   void addEvent(Event e) {
     events.add(e);
+  }
+  
+  int getDate() {
+    return date;
   }
 
 }
