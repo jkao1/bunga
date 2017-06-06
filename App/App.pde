@@ -1,4 +1,5 @@
-import java.util.Calendar;
+import java.util.*;
+import java.text.*;
 
 final int SCREENWIDTH = 1040;
 final int SCREENHEIGHT = 720;
@@ -13,33 +14,30 @@ String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "
 
 void setup() {
   surface.setSize( SCREENWIDTH, SCREENHEIGHT );
-  c = Calendar.getInstance();
-  print(c);
+ Calendar calendar = Calendar.getInstance();               
+  SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/YYYY");
+  calendar.set(Calendar.MONTH,Calendar.JUNE);
+  calendar.set(Calendar.DAY_OF_MONTH,1);          
+  int day = (Calendar.SUNDAY-calendar.get(Calendar.DAY_OF_WEEK));            
+  if(day<0){
+    calendar.add(Calendar.DATE,7+(day));
+  }else{
+      calendar.add(Calendar.DATE,day);
+  }
+  // calendar is now at first SUnday of the month
+  calendar.add(Calendar.DAY_OF_MONTH, -7);
+  Date start = calendar.getTime();
+  drawDaysInMonth( start.getYear(), start.getMonth(), start.getDate());
 }
 
-void getDaysInMonth(int m, int y, int dayOfWeek) {
-  Date s, e;
-  if(m % 2 == 0){
-    s = new Date(y, m-1, 30 - dayOfWeek + 1);
-    e = new Date(y, m+1, 42 - (31 + dayOfWeek));
-  }else if(m == 1){
-    if(y % 400 == 0){
-      s = new Date(y,m-1, 31 - dayOfWeek + 1);
-      e = new Date(y, m+1, 42 - (29 + dayOfWeek));
-    }else{
-      s = new Date(y, m-1, 31 - dayOfWeek + 1); 
-      e = new Date(y, m+1, 42 - (28 + dayOfWeek));
-    }
-  }else{
-      s = new Date(y, m-1, 31 - dayOfWeek + 1);
-      e = new Date(y, m+1, 42 - (30 + dayOfWeek));
+void drawDaysInMonth(int y, int m, int d) {
+  for (int i = 0; i < 42; i++) {
+    Day day = new Day( y, m, d + i );
+    day.display(i);
   }
 }
 void draw() {
-  for (int i = 0; i < 42; i++) {
-    Day d = new Day( c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE) + i );
-    d.display(i);    
-  }
+  drawDaysInMonth( 4, 4,4);
 }
 
 void drawDay(int x, int y, int z) {}
