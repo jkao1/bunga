@@ -1,27 +1,52 @@
 import java.util.*;
 
 class EventCollection {
-
-    ArrayList<Event> events;
-
-    EventCollection() {
-        events = new ArrayList<Event>();
-    }
-
-    void add(Event e) {
-        events.add(e);
-    }
-    
-    ArrayList<Event> getEventsOnDay(Date date)
-    {
-      ArrayList<Event> output = new ArrayList<Event>();
-      for (Event e : events) {
-        if ( e.onDate( date )) {
-          output.add( e );
-        }
+  
+  TreeSet<Event> events;
+  
+  EventCollection(String filename) {
+    String[] lines = loadStrings(filename);
+    for (String line : lines) {
+      String[] ary = line.split(",");
+      events = new TreeSet<Event>();
+      String name;        
+      int year, month, date;
+      String description =  "";
+      int duration = 60;
+      int type = 0;
+      name = ary[0];
+      year = Integer.parseInt(ary[1]);
+      month = Integer.parseInt(ary[2]);
+      date = Integer.parseInt(ary[3]);
+      if (ary.length > 4) {
+        duration = Integer.parseInt(ary[4]);
       }
-      return output;          
+      if (ary.length > 5) {
+        description = ary[5];
+      }
+      if (ary.length > 6) {
+        type = Integer.parseInt(ary[6]);
+      }
+      events.add( new Event( name, year, month, date, duration, description, type ));
     }
-
-    // do iterator
+  }
+  
+  Event[] getEventsInMonth(int y, int m) {
+    Set<Event> temp = events.subSet( new Event( "", y, m, 1 ), new Event( "", y, m + 1, 1 ));
+    Event[] output = temp.toArray( new Event[ temp.size() ]);
+    return output;
+  }
+  
+  Event[] getEventsInWeek(int y, int m, int d) {
+    Set<Event> temp = events.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 8 ));
+    Event[] output = temp.toArray( new Event[ temp.size() ]);
+    return output;
+  }
+  
+  Event[] getEventsInDay(int y, int m, int d) {
+    Set<Event> temp = events.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 1 ));
+    Event[] output = temp.toArray( new Event[ temp.size() ]);
+    return output;
+  }
+  
 }

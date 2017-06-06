@@ -6,18 +6,15 @@ class Day {
 
   int year, month, date;
   int xpos, ypos;
-  EventCollection events;
 
   Day(int year, int month, int date) {
     this.year = year;
     this.month = month;
     this.date = date;
-    events = new EventCollection();
   }
   
   void display(int i, int layout, int col) {
-      //for month layout
-    if(layout == 0){
+    if (layout == 0) { // month layout
       xpos = (i % 7) * CAL_WIDTH / 7;
       ypos = 120 + ((i / 7) * (CAL_HEIGHT) / 6);
       rect(xpos, ypos, CAL_WIDTH / 7, CAL_HEIGHT / 6);
@@ -27,19 +24,13 @@ class Day {
       text(Integer.toString(date), xpos + 20, ypos + 30);
       fill(255);
       
-      //for week layout
-    }else if(layout == 1){
+    } else if(layout == 1) { // week layout
       
-      //for day layout
-    }else{
+    } else { // day layout
       
     }
   }
 
-  void addEvent(Event e) {
-    events.add(e);
-  }
-  
   int getDate() {
     return date;
   }

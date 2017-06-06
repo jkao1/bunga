@@ -6,26 +6,29 @@ public class Event {
     private int duration; // in minutes
     private String name, description;
     private Location loc;
-    private int color;
-
-    public Event(String name, Date date)
-    {
+    private int type;
+    
+    public Event(String name, int year, int month, int date) {
         this.name = name;
-        this.year = date.getYear();
-        this.month = date.getMonth();
-        this.date = date.getDate();
-    }
-
-    public Event(String name, Date date, int duration, String description)
-    {
-        this(name, date);
-        this.duration = duration;
-        this.description = description;
+        this.year = year;
+        this.month = month;
+        this.date = date;
     }
     
-    public boolean onDate(Date d) {
-        return year == d.getYear() && month == d.getMonth() && date == d.getDate();
+    public Event(String name, int year, int month, int date, int duration, String description, int type) {
+        this( name, year, month, date );
+        this.duration = duration;
+        this.description = description;
+        this.type = type;
     }
 
+    public int compareTo(Event e)
+    {
+        if (date == e.date && month == e.month && year == e.year) {
+            return name.compareTo( e.name );
+        } else {
+            return ( new Date( year, month, date ).compareTo( new Date ( e.year, e.month ,e.date )));
+        }
+    }
 
 }

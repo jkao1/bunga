@@ -31,7 +31,12 @@ void setup() {
   startYear = startDate.getYear();
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
+  
+  test();
 }
+
+void test() {
+  
 
 //draws days according to actual day
 void drawDaysInMonth(int y, int m, int d) {
