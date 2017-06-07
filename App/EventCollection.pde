@@ -5,10 +5,10 @@ class EventCollection {
   TreeSet<Event> events;
   
   EventCollection(String filename) {
+    events = new TreeSet<Event>();
     String[] lines = loadStrings(filename);
     for (String line : lines) {
-      String[] ary = line.split(",");
-      events = new TreeSet<Event>();
+      String[] ary = line.split(",");      
       String name;        
       int year, month, date;
       String description =  "";
@@ -28,13 +28,15 @@ class EventCollection {
         type = Integer.parseInt(ary[6]);
       }
       events.add( new Event( name, year, month, date, duration, description, type ));
+      println('h');
     }
+    println(this);
   }
   
   Event[] getEventsInMonth(int y, int m) {
     Set<Event> temp = events.subSet( new Event( "", y, m, 1 ), new Event( "", y, m + 1, 1 ));
     Event[] output = temp.toArray( new Event[ temp.size() ]);
-    return output;
+    return events.toArray(new Event[events.size()]);
   }
   
   Event[] getEventsInWeek(int y, int m, int d) {
@@ -47,6 +49,10 @@ class EventCollection {
     Set<Event> temp = events.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 1 ));
     Event[] output = temp.toArray( new Event[ temp.size() ]);
     return output;
+  }
+  
+  String toString() {
+    return events.toString();
   }
   
 }

@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Event {
+public class Event implements Comparable<Event> {
 
     private int year, month, date;
     private int duration; // in minutes
@@ -21,14 +21,23 @@ public class Event {
         this.description = description;
         this.type = type;
     }
+    
+    public boolean onDay(int y, int m, int d) {
+        return year == y && month == m && date == d;
+    }
 
     public int compareTo(Event e)
     {
-        if (date == e.date && month == e.month && year == e.year) {
-            return name.compareTo( e.name );
+        Date me = new Date(year, month, date);
+        Date you = new Date(e.year, e.month, e.date);
+        if (me.compareTo(you) == 0) {
+            return name.compareTo(e.name);
         } else {
-            return ( new Date( year, month, date ).compareTo( new Date ( e.year, e.month ,e.date )));
+            return me.compareTo(you);
         }
     }
-
+    
+    public String toString() {
+        return name;
+    }
 }

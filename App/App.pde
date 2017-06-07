@@ -32,6 +32,8 @@ void setup() {
   startYear = startDate.getYear();
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
+  events = new EventCollection("data.in");
+  print(events);
 }
 
 //draws buttons to choose layout
@@ -53,11 +55,20 @@ void drawButtonLayouts(){
 //draws days according to actual day
 void drawDaysInMonth(int y, int m, int d) {
   Calendar testCal = new GregorianCalendar( y, m, d );
-  
+  Event[] theseEvents = events.getEventsInMonth(y, m);
   boolean switched = false;
   int col = 150;
-  for (int i = 0; i < 42; i++) {
+  
+  int dayNum = 0;
+  int eventTracker = 0;
+  
+  while (dayNum < 42) {
+    
     Day day = new Day( testCal.get(Calendar.YEAR), testCal.get(Calendar.MONTH), testCal.get(Calendar.DATE) );
+    while (eventTracker < theseEvents.length && theseEvents[eventTracker].onDay( day.getYear(), day.getMonth(), day.getDate() )) {
+      day.addEvent( theseEvents[eventTracker] );
+      eventTracker++;
+    }
     if ( day.getDate() == 1 ) {
       if (switched) {
         col = 150;
@@ -66,8 +77,9 @@ void drawDaysInMonth(int y, int m, int d) {
         switched = true;
       }
     }
-    day.display(i, 0, col); // position i, layout 0, color 0
+    day.display(dayNum, 0, col); // position i, layout 0, color 0
     testCal.add( Calendar.DATE, 1 );
+    dayNum++;
   }
 }
 
