@@ -34,17 +34,21 @@ void setup() {
   events = new EventCollection("data.in");
   print(events);
 }
-
+void changeLayout(){
+  if(mouseY > 10 && mouse < 40){
+    if(mouseX > CAL_WIDTH / 2 - 200 && mouseX < CAL_WIDTH / 2 - 100){
+      //create button class
+  
 //draws buttons to choose layout
 void drawButtonLayouts(){
   font = loadFont("ArialHebrew-120.vlw");
-  textFont(font, 20);
+  textFont(font, 15);
   fill(0);
   rect(CAL_WIDTH / 2 - 200, 10, 100, 30, 10, 0, 0, 10);
   rect(CAL_WIDTH / 2 - 100, 10, 100, 30);
   rect(CAL_WIDTH / 2, 10, 100, 30);
   rect(CAL_WIDTH / 2 + 100, 10, 100, 30, 0, 10, 10, 0);
-  fill(100);
+  fill(255);
   text("Day", CAL_WIDTH / 2 - 200 + 20, 30);
   text("Week", CAL_WIDTH / 2 - 100 + 20, 30);
   text("Month",CAL_WIDTH / 2 + 20, 30); 
@@ -83,6 +87,7 @@ void drawDaysInMonth(int y, int m, int d) {
 }
 
 void draw() {
+  fill(255);
   drawDaysInMonth( startYear, startMonth, startDay );
   drawButtonLayouts();
 }

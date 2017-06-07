@@ -31,7 +31,7 @@ class EventCollection {
       if (ary.length > 7) {
         col = Integer.parseInt(ary[7]);
       }
-      events.add( new Event( name, year, month, date, duration, description, type, col ));
+      events.add( new Event( name, year, month, date, duration, description, type));
       println('h');
     }
     println(this);

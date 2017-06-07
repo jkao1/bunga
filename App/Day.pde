@@ -20,14 +20,14 @@ class Day {
       xpos = (i % 7) * CAL_WIDTH / 7;
       ypos = 120 + ((i / 7) * (CAL_HEIGHT) / 6);
       rect(xpos, ypos, CAL_WIDTH / 7, CAL_HEIGHT / 6);
-      fill(col);
       font = loadFont("ArialHebrew-120.vlw");
       textFont(font, 15);
+      fill(col);
       text(Integer.toString(date), xpos + 20, ypos + 30);
       while (!events.isEmpty()) {
         Event event = events.remove();
         fill(event.col());
-        rect(xpos, ypos + 35, CAL_WIDTH / 7, 15);
+        rect(xpos, ypos + 35, CAL_WIDTH / 7, 15, 5, 5, 5, 5);
         fill(100); //choose another color??
         text(event.toString(), xpos + 20, ypos + 50);
         ypos += 60;

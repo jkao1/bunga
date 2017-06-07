@@ -17,7 +17,7 @@ public class Event implements Comparable<Event> {
         col = 0;
     }
     
-    public Event(String name, int year, int month, int date, int duration, String description, int type, int col) {
+    public Event(String name, int year, int month, int date, int duration, String description, int type) {
         this( name, year, month, date );
         this.duration = duration;
         this.description = description;
