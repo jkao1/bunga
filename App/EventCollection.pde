@@ -14,6 +14,7 @@ class EventCollection {
       String description =  "";
       int duration = 60;
       int type = 0;
+      int col = 0;
       name = ary[0];
       year = Integer.parseInt(ary[1]);
       month = Integer.parseInt(ary[2]);
@@ -27,7 +28,10 @@ class EventCollection {
       if (ary.length > 6) {
         type = Integer.parseInt(ary[6]);
       }
-      events.add( new Event( name, year, month, date, duration, description, type ));
+      if (ary.length > 7) {
+        col = Integer.parseInt(ary[7]);
+      }
+      events.add( new Event( name, year, month, date, duration, description, type, col ));
       println('h');
     }
     println(this);

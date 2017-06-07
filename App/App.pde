@@ -17,7 +17,6 @@ void setup() {
   surface.setSize( CAL_WIDTH, 120 + CAL_HEIGHT );
   Calendar calendar = Calendar.getInstance();               
   SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/YYYY");
-  drawButtonLayouts();
   calendar.set(Calendar.MONTH,Calendar.JUNE);
   calendar.set(Calendar.DAY_OF_MONTH,1);          
   int day = (Calendar.SUNDAY-calendar.get(Calendar.DAY_OF_WEEK));            
@@ -38,18 +37,18 @@ void setup() {
 
 //draws buttons to choose layout
 void drawButtonLayouts(){
-  fill(0);
   font = loadFont("ArialHebrew-120.vlw");
   textFont(font, 20);
-  rect(CAL_WIDTH / 2 - 120, 30, 30, 60, 5, 0, 0, 5);
-  text("Day", 25, CAL_WIDTH / 2 - 120 + 20);
-  rect(CAL_WIDTH / 2 - 60, 30, 30, 60);
-  text("Week", 25, CAL_WIDTH / 2 - 60 + 20);
-  rect(CAL_WIDTH / 2, 30, 30, 60);
-  text("Month", 25, CAL_WIDTH / 2 + 20); 
-  rect(CAL_WIDTH / 2 + 60, 30, 30, 60, 0, 5, 5, 0);
-  text("Year", 25, CAL_WIDTH / 2 + 60 + 20);
   fill(0);
+  rect(CAL_WIDTH / 2 - 200, 10, 100, 30, 10, 0, 0, 10);
+  rect(CAL_WIDTH / 2 - 100, 10, 100, 30);
+  rect(CAL_WIDTH / 2, 10, 100, 30);
+  rect(CAL_WIDTH / 2 + 100, 10, 100, 30, 0, 10, 10, 0);
+  fill(100);
+  text("Day", CAL_WIDTH / 2 - 200 + 20, 30);
+  text("Week", CAL_WIDTH / 2 - 100 + 20, 30);
+  text("Month",CAL_WIDTH / 2 + 20, 30); 
+  text("Year", CAL_WIDTH / 2 + 100 + 20, 30);
 }
 
 //draws days according to actual day
@@ -85,4 +84,5 @@ void drawDaysInMonth(int y, int m, int d) {
 
 void draw() {
   drawDaysInMonth( startYear, startMonth, startDay );
+  drawButtonLayouts();
 }

@@ -7,19 +7,22 @@ public class Event implements Comparable<Event> {
     private String name, description;
     private Location loc;
     private int type;
+    private int col;
     
     public Event(String name, int year, int month, int date) {
         this.name = name;
         this.year = year;
         this.month = month;
         this.date = date;
+        col = 0;
     }
     
-    public Event(String name, int year, int month, int date, int duration, String description, int type) {
+    public Event(String name, int year, int month, int date, int duration, String description, int type, int col) {
         this( name, year, month, date );
         this.duration = duration;
         this.description = description;
         this.type = type;
+        this.col = col;
     }
     
     public boolean onDay(int y, int m, int d) {
@@ -39,5 +42,9 @@ public class Event implements Comparable<Event> {
     
     public String toString() {
         return name;
+    }
+    
+    public int col(){
+      return col;
     }
 }

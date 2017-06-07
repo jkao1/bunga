@@ -22,14 +22,21 @@ class Day {
       rect(xpos, ypos, CAL_WIDTH / 7, CAL_HEIGHT / 6);
       fill(col);
       font = loadFont("ArialHebrew-120.vlw");
-      textFont(font, 20);
+      textFont(font, 15);
       text(Integer.toString(date), xpos + 20, ypos + 30);
-      if (!events.isEmpty()) {
-        text(events.toString(), xpos + 20, ypos + 60);
+      while (!events.isEmpty()) {
+        Event event = events.remove();
+        fill(event.col());
+        rect(xpos, ypos + 35, CAL_WIDTH / 7, 15);
+        fill(100); //choose another color??
+        text(event.toString(), xpos + 20, ypos + 50);
+        ypos += 60;
       }
       fill(255);
       
     } else if(layout == 1) { // week layout
+      ypos = 120;
+      xpos = (i % 7 ) * CAL_WIDTH / 7; 
       
     } else { // day layout
       
