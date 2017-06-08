@@ -106,30 +106,46 @@ class Day {
       xpos = (i % 7 ) * CAL_WIDTH / 7; 
       
     } else { // day layout
+      font = loadFont("ArialHebrew-120.vlw");
+      textFont(font, 24);
       ypos = 120;
       xpos = 0;
       int yChange = (CAL_HEIGHT - 120) / 25;
       rect(xpos, ypos, CAL_WIDTH, yChange);
+      fill(0);
       text("All Day", xpos, ypos);
+      fill(255);
       ypos += yChange;
-      String noon = " PM";
+      String noon = " AM";
       for(int n = 0; n <= 1; n++){
         if(n == 0){
           rect(xpos, ypos, CAL_WIDTH, yChange);
+          fill(0);
           text("12 AM", xpos, ypos);
+          fill(255);
           ypos += yChange;
         }else if(n == 1){
           rect(xpos, ypos, CAL_WIDTH, yChange);
+          fill(0);
           text("12 PM", xpos, ypos);
+          fill(255);
           ypos += yChange;
-          noon = " AM";
+          noon = " PM";
         } 
         for(int t = 1; t < 12; t++){
           rect(xpos, ypos, CAL_WIDTH, yChange);
+          fill(0);
           text(t + noon, xpos, ypos);
+          fill(255);
           ypos += yChange;
         }
       }
+      Date d = new Date();
+      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+      int currentHour = Integer.parseInt(dateFormat.format(d).substring(11, 13));
+      int currentMin = Integer.parseInt(dateFormat.format(d).substring(14, 16));
+      fill(255, 0, 0);
+      rect(xpos, (currentHour * yChange) + 120 + ((currentMin / 60.) * yChange), CAL_WIDTH, 2); 
     }
   }
   

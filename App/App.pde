@@ -51,13 +51,6 @@ void setup() {
   drawDaysInMonth( startYear, startMonth, startDay );
 }
 
-void day(int val){
-  if(val == 0){
-    layout = 2;
-    drawDay(startYear, startMonth, startDay);
-  }
-}
-
 void drawDay(int y, int m, int d){
   if(layout == 2){
     Day day = new Day(y, m, d);
@@ -66,27 +59,8 @@ void drawDay(int y, int m, int d){
   }
 } 
 
-void week(int val){
-  if(val == 100){
-    layout = 1;
-    drawDaysInWeek(startYear, startMonth, startDay);
-  }
-}
-
 void drawDaysInWeek(int y, int m, int d){
   Event[] e = events.getEventsInWeek(y, m, d);
-}
-
-void month(int val){
-  if(val == 90){
-    drawDaysInMonth(startYear, startMonth, startDay);
-  }
-}
-
-void year(int val){
-  if(val == 3){
-    drawYear(startYear, startMonth, startDay);
-  }
 }
 
 void drawYear(int y, int m, int s){
@@ -116,7 +90,6 @@ void initCalendar() {
 
 void draw() {
   fill(255);
-  day(0);
 }
 
 void mousePressed() {
@@ -168,7 +141,25 @@ void drawDaysInMonth(int y, int m, int d) {
 }
 
 public void controlEvent(ControlEvent theEvent) {
-  println(theEvent.getController().getValue());
+  if(theEvent.controller().getName() == "Day"){
+    layout = 2;
+    background(255);
+    drawDay(startYear, startMonth, startDay);
+  }
+  
+  if(theEvent.controller().getName() == "Week"){
+    layout = 1;
+    drawDaysInWeek(startYear, startMonth, startDay);
+  }
+  
+  if(theEvent.controller().getName() == "Month"){
+    layout = 0;
+    drawDaysInMonth(startYear, startMonth, startDay);
+  }
+  
+  if(theEvent.controller().getName() == "Year"){
+    drawYear(startYear, startMonth, startDay);
+  }
 }
 
 
