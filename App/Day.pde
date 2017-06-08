@@ -106,7 +106,30 @@ class Day {
       xpos = (i % 7 ) * CAL_WIDTH / 7; 
       
     } else { // day layout
-      
+      ypos = 120;
+      xpos = 0;
+      int yChange = (CAL_HEIGHT - 120) / 25;
+      rect(xpos, ypos, CAL_WIDTH, yChange);
+      text("All Day", xpos, ypos);
+      ypos += yChange;
+      String noon = " PM";
+      for(int n = 0; n <= 1; n++){
+        if(n == 0){
+          rect(xpos, ypos, CAL_WIDTH, yChange);
+          text("12 AM", xpos, ypos);
+          ypos += yChange;
+        }else if(n == 1){
+          rect(xpos, ypos, CAL_WIDTH, yChange);
+          text("12 PM", xpos, ypos);
+          ypos += yChange;
+          noon = " AM";
+        } 
+        for(int t = 1; t < 12; t++){
+          rect(xpos, ypos, CAL_WIDTH, yChange);
+          text(t + noon, xpos, ypos);
+          ypos += yChange;
+        }
+      }
     }
   }
   
