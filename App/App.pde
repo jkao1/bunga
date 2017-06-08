@@ -33,7 +33,6 @@ void setup() {
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
   events = new EventCollection("data.in");
-  print(events);
 }
 
 //draws buttons to choose layout

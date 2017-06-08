@@ -28,9 +28,7 @@ class EventCollection {
         type = Integer.parseInt(ary[6]);
       }
       events.add( new Event( name, year, month, date, duration, description, type ));
-      println('h');
     }
-    println(this);
   }
   
   Event[] getEventsInMonth(int y, int m) {
