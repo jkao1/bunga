@@ -1,5 +1,5 @@
 # calendar-wu
-
+Why is the font so blurry? :(
 ## Bugs
 
 ## Features
@@ -16,4 +16,5 @@
 - 6/6
 --| Jason: file reading is comlete and data management  
 --| Joyce: draw events on each day
-
+- 6/8
+--| Jason: made UI of days prettier, edited EventCollection, CONTROLP5  
