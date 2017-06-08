@@ -101,9 +101,62 @@ class Day {
         relY += 17;
       }      
       fill(255);
+      
     } else if(layout == 1) { // week layout
       ypos = 120;
-      xpos = (i % 7 ) * CAL_WIDTH / 7; 
+      xpos = 75;
+      int xChange = (CAL_WIDTH - 75) / 7;
+      int yChange = (CAL_HEIGHT - 120) / 25;
+      rect(0, ypos, 75, yChange);
+      fill(0);
+      text("All Day", 0, ypos);
+      fill(255);
+      ypos += yChange;
+      String noon = " AM";
+      for(int n = 0; n <= 1; n++){
+        if(n == 0){
+          rect(0, ypos, 75, yChange);
+          fill(0);
+          text("12 AM", 0, ypos);
+          fill(255);
+          ypos += yChange;
+        }else if(n == 1){
+          rect(0, ypos, 75, yChange);
+          fill(0);
+          text("12 PM", 0, ypos);
+          fill(255);
+          ypos += yChange;
+          noon = " PM";
+        } 
+        for(int t = 1; t < 12; t++){
+          rect(0, ypos, 75, yChange);
+          fill(0);
+          text(t + noon, 0, ypos);
+          fill(255);
+          ypos += yChange;
+        }
+      } 
+      fill(255);
+      for(int v = 0; v < 7; v++){
+        ypos = 120;
+        for(int n = 0; n < 25; n++){
+          rect(xpos, ypos, xChange, yChange);
+          if(n == 0){ //prints out 00s??
+            fill(0);
+            text(Integer.toString(i), xpos, ypos);
+            fill(255);
+          }
+          ypos += yChange;
+        } 
+        xpos += xChange;
+      }
+      
+      Date d = new Date();
+      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+      int currentHour = Integer.parseInt(dateFormat.format(d).substring(11, 13));
+      int currentMin = Integer.parseInt(dateFormat.format(d).substring(14, 16));
+      fill(255, 0, 0);
+      rect(0, (currentHour * yChange) + 120 + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
       
     } else { // day layout
       font = loadFont("ArialHebrew-120.vlw");
