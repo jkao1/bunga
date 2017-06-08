@@ -61,6 +61,17 @@ void drawDay(int y, int m, int d){
 
 void drawDaysInWeek(int y, int m, int d){
   Event[] e = events.getEventsInWeek(y, m, d);
+  SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
+  Calendar tempCal = Calendar.getInstance();
+  tempCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+  for(int i = 0; i < 7; i++){ //covers year and month rollovers
+    int dayNum = sdf.format(tempCal.getTime()).substring(3, 5);
+    int monthNum = sdf.format(tempCal.getTime()).substring(0, 2);
+    int yearNum = sdf.format(tempCal.getTime()).substring(6);
+    Day day = new Day(yearNum, monthNum, dayNum);
+    day.display(dayNum, 1, 255);
+    tempCal.roll(Calendar.DAY_OF_WEEK, 1);
+  }
 }
 
 void drawYear(int y, int m, int s){
