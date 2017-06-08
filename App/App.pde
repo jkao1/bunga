@@ -1,9 +1,14 @@
+import controlP5.*;
 import java.util.*;
 import java.text.*;
 
-final int CAL_WIDTH = 150 * 7;
+final int CAL_WIDTH = 1050;
 final int CAL_HEIGHT = 660;
+final int HEADER_HEIGHT = 80;
+final int navButtonWidth = 80;
+final int navButtonHeight = 20;
 
+import controlP5.*;
 Calendar c;
 EventCollection events;
 ArrayList<Day> days;
@@ -12,12 +17,44 @@ String[] months = {"January", "February", "March", "April", "May", "June",
                    "July", "August", "September", "October", "November", "December"};
 String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
                        "Saturday"};
+ControlP5 cp5;
+
+int myColor = color(255);
+
+int c1,c2;
+
+float n,n1;
+
 
 void setup() {
-  surface.setSize( CAL_WIDTH, 120 + CAL_HEIGHT );
+  size(1050, 740);
+  cp5 = new ControlP5(this);
+  
+  // create a new button with name 'buttonA'
+  cp5.addButton("Day")
+     .setValue(0)
+     .setPosition(0, 10)
+     .setSize(navButtonWidth, navButtonHeight);
+  cp5.addButton("Week")
+     .setValue(100)
+     .setPosition(navButtonWidth + 10, 10)
+     .setSize(navButtonWidth, navButtonHeight);    
+  cp5.addButton("Month")
+     .setValue(90)
+     .setPosition(2 * navButtonWidth + 20, 10)
+     .setSize(navButtonWidth, navButtonHeight);
+  cp5.addButton("Year")
+     .setValue(03)
+     .setPosition(3 * navButtonWidth + 30, 10)
+     .setSize(navButtonWidth, navButtonHeight);
+     
+  initCalendar();
+}
+
+void initCalendar() {
+  events = new EventCollection("data.in");
   Calendar calendar = Calendar.getInstance();               
   SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/YYYY");
-  drawButtonLayouts();
   calendar.set(Calendar.MONTH,Calendar.JUNE);
   calendar.set(Calendar.DAY_OF_MONTH,1);          
   int day = (Calendar.SUNDAY-calendar.get(Calendar.DAY_OF_WEEK));            
@@ -32,26 +69,13 @@ void setup() {
   startYear = startDate.getYear();
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
-  events = new EventCollection("data.in");
 }
 
-//draws buttons to choose layout
-void drawButtonLayouts(){
-  fill(0);
-  font = loadFont("ArialHebrew-120.vlw");
-  textFont(font, 20);
-  rect(CAL_WIDTH / 2 - 120, 30, 30, 60, 5, 0, 0, 5);
-  text("Day", 25, CAL_WIDTH / 2 - 120 + 20);
-  rect(CAL_WIDTH / 2 - 60, 30, 30, 60);
-  text("Week", 25, CAL_WIDTH / 2 - 60 + 20);
-  rect(CAL_WIDTH / 2, 30, 30, 60);
-  text("Month", 25, CAL_WIDTH / 2 + 20); 
-  rect(CAL_WIDTH / 2 + 60, 30, 30, 60, 0, 5, 5, 0);
-  text("Year", 25, CAL_WIDTH / 2 + 60 + 20);
-  fill(0);
+void draw() {
+  fill(255);
+  drawDaysInMonth( startYear, startMonth, startDay );
 }
 
-//draws days according to actual day
 void drawDaysInMonth(int y, int m, int d) {
   Calendar testCal = new GregorianCalendar( y, m, d );
   Event[] theseEvents = events.getEventsInMonth(y, m);
@@ -82,6 +106,170 @@ void drawDaysInMonth(int y, int m, int d) {
   }
 }
 
-void draw() {
-  drawDaysInMonth( startYear, startMonth, startDay );
+public void controlEvent(ControlEvent theEvent) {
+  println(theEvent.getController().getName());
+  n = 0;
 }
+
+// function colorA will receive changes from 
+// controller with name colorA
+public void colorA(int theValue) {
+  println("a button event from colorA: "+theValue);
+  c1 = c2;
+  c2 = color(0,160,100);
+}
+
+// function colorB will receive changes from 
+// controller with name colorB
+public void colorB(int theValue) {
+  println("a button event from colorB: "+theValue);
+  c1 = c2;
+  c2 = color(150,0,0);
+}
+
+// function colorC will receive changes from 
+// controller with name colorC
+public void colorC(int theValue) {
+  println("a button event from colorC: "+theValue);
+  c1 = c2;
+  c2 = color(255,255,0);
+}
+
+public void play(int theValue) {
+  println("a button event from buttonB: "+theValue);
+  c1 = c2;
+  c2 = color(0,0,0);
+}
+
+
+/*
+a list of all methods available for the Button Controller
+use ControlP5.printPublicMethodsFor(Button.class);
+to print the following list into the console.
+
+You can find further details about class Button in the javadoc.
+
+Format:
+ClassName : returnType methodName(parameter type)
+
+
+controlP5.Button : Button activateBy(int) 
+controlP5.Button : Button setOff() 
+controlP5.Button : Button setOn() 
+controlP5.Button : Button setSwitch(boolean) 
+controlP5.Button : Button setValue(float) 
+controlP5.Button : Button update() 
+controlP5.Button : String getInfo() 
+controlP5.Button : String toString() 
+controlP5.Button : boolean getBooleanValue() 
+controlP5.Button : boolean isOn() 
+controlP5.Button : boolean isPressed() 
+controlP5.Controller : Button addCallback(CallbackListener) 
+controlP5.Controller : Button addListener(ControlListener) 
+controlP5.Controller : Button bringToFront() 
+controlP5.Controller : Button bringToFront(ControllerInterface) 
+controlP5.Controller : Button hide() 
+controlP5.Controller : Button linebreak() 
+controlP5.Controller : Button listen(boolean) 
+controlP5.Controller : Button lock() 
+controlP5.Controller : Button plugTo(Object) 
+controlP5.Controller : Button plugTo(Object, String) 
+controlP5.Controller : Button plugTo(Object[]) 
+controlP5.Controller : Button plugTo(Object[], String) 
+controlP5.Controller : Button registerProperty(String) 
+controlP5.Controller : Button registerProperty(String, String) 
+controlP5.Controller : Button registerTooltip(String) 
+controlP5.Controller : Button removeBehavior() 
+controlP5.Controller : Button removeCallback() 
+controlP5.Controller : Button removeCallback(CallbackListener) 
+controlP5.Controller : Button removeListener(ControlListener) 
+controlP5.Controller : Button removeProperty(String) 
+controlP5.Controller : Button removeProperty(String, String) 
+controlP5.Controller : Button setArrayValue(float[]) 
+controlP5.Controller : Button setArrayValue(int, float) 
+controlP5.Controller : Button setBehavior(ControlBehavior) 
+controlP5.Controller : Button setBroadcast(boolean) 
+controlP5.Controller : Button setCaptionLabel(String) 
+controlP5.Controller : Button setColor(CColor) 
+controlP5.Controller : Button setColorActive(int) 
+controlP5.Controller : Button setColorBackground(int) 
+controlP5.Controller : Button setColorCaptionLabel(int) 
+controlP5.Controller : Button setColorForeground(int) 
+controlP5.Controller : Button setColorValueLabel(int) 
+controlP5.Controller : Button setDecimalPrecision(int) 
+controlP5.Controller : Button setDefaultValue(float) 
+controlP5.Controller : Button setHeight(int) 
+controlP5.Controller : Button setId(int) 
+controlP5.Controller : Button setImages(PImage, PImage, PImage) 
+controlP5.Controller : Button setImages(PImage, PImage, PImage, PImage) 
+controlP5.Controller : Button setLabelVisible(boolean) 
+controlP5.Controller : Button setLock(boolean) 
+controlP5.Controller : Button setMax(float) 
+controlP5.Controller : Button setMin(float) 
+controlP5.Controller : Button setMouseOver(boolean) 
+controlP5.Controller : Button setMoveable(boolean) 
+controlP5.Controller : Button setPosition(PVector) 
+controlP5.Controller : Button setPosition(float, float) 
+controlP5.Controller : Button setSize(PImage) 
+controlP5.Controller : Button setSize(int, int) 
+controlP5.Controller : Button setStringValue(String) 
+controlP5.Controller : Button setUpdate(boolean) 
+controlP5.Controller : Button setValueLabel(String) 
+controlP5.Controller : Button setView(ControllerView) 
+controlP5.Controller : Button setVisible(boolean) 
+controlP5.Controller : Button setWidth(int) 
+controlP5.Controller : Button show() 
+controlP5.Controller : Button unlock() 
+controlP5.Controller : Button unplugFrom(Object) 
+controlP5.Controller : Button unplugFrom(Object[]) 
+controlP5.Controller : Button unregisterTooltip() 
+controlP5.Controller : Button update() 
+controlP5.Controller : Button updateSize() 
+controlP5.Controller : CColor getColor() 
+controlP5.Controller : ControlBehavior getBehavior() 
+controlP5.Controller : ControlWindow getControlWindow() 
+controlP5.Controller : ControlWindow getWindow() 
+controlP5.Controller : ControllerProperty getProperty(String) 
+controlP5.Controller : ControllerProperty getProperty(String, String) 
+controlP5.Controller : Label getCaptionLabel() 
+controlP5.Controller : Label getValueLabel() 
+controlP5.Controller : List getControllerPlugList() 
+controlP5.Controller : PImage setImage(PImage) 
+controlP5.Controller : PImage setImage(PImage, int) 
+controlP5.Controller : PVector getAbsolutePosition() 
+controlP5.Controller : PVector getPosition() 
+controlP5.Controller : String getAddress() 
+controlP5.Controller : String getInfo() 
+controlP5.Controller : String getName() 
+controlP5.Controller : String getStringValue() 
+controlP5.Controller : String toString() 
+controlP5.Controller : Tab getTab() 
+controlP5.Controller : boolean isActive() 
+controlP5.Controller : boolean isBroadcast() 
+controlP5.Controller : boolean isInside() 
+controlP5.Controller : boolean isLabelVisible() 
+controlP5.Controller : boolean isListening() 
+controlP5.Controller : boolean isLock() 
+controlP5.Controller : boolean isMouseOver() 
+controlP5.Controller : boolean isMousePressed() 
+controlP5.Controller : boolean isMoveable() 
+controlP5.Controller : boolean isUpdate() 
+controlP5.Controller : boolean isVisible() 
+controlP5.Controller : float getArrayValue(int) 
+controlP5.Controller : float getDefaultValue() 
+controlP5.Controller : float getMax() 
+controlP5.Controller : float getMin() 
+controlP5.Controller : float getValue() 
+controlP5.Controller : float[] getArrayValue() 
+controlP5.Controller : int getDecimalPrecision() 
+controlP5.Controller : int getHeight() 
+controlP5.Controller : int getId() 
+controlP5.Controller : int getWidth() 
+controlP5.Controller : int listenerSize() 
+controlP5.Controller : void remove() 
+controlP5.Controller : void setView(ControllerView, int) 
+java.lang.Object : String toString() 
+java.lang.Object : boolean equals(Object) 
+
+
+*/
