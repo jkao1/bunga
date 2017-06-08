@@ -27,7 +27,6 @@ class EventCollection {
       if (ary.length > 6) {
         type = Integer.parseInt(ary[6]);
       }
-      println(type);
       events.add( new Event( name, year, month, date, duration, description, type));
     }    
   }

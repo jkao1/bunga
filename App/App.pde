@@ -4,14 +4,16 @@ import java.text.*;
 
 final int CAL_WIDTH = 1050;
 final int CAL_HEIGHT = 660;
-final int HEADER_HEIGHT = 80;
+final int HEADER_HEIGHT = 100;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
 
 import controlP5.*;
-Calendar c;
+Calendar testCal; // for rolling & adding when drawing the layouts (like a test charge xd we use it to do relative stuff)
+Date now;
+Day justDrawnEventOn;
 EventCollection events;
-ArrayList<Day> days;
+DayCollection days;
 int startYear, startMonth, startDay;
 String[] months = {"January", "February", "March", "April", "May", "June", 
                    "July", "August", "September", "October", "November", "December"};
@@ -19,15 +21,12 @@ String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "
                        "Saturday"};
 ControlP5 cp5;
 
-int myColor = color(255);
-
-int c1,c2;
-
-float n,n1;
+int layout;
 
 
 void setup() {
   size(1050, 740);
+  days = new DayCollection();
   cp5 = new ControlP5(this);
   
   // create a new button with name 'buttonA'
@@ -49,6 +48,7 @@ void setup() {
      .setSize(navButtonWidth, navButtonHeight);
      
   initCalendar();
+  drawDaysInMonth( startYear, startMonth, startDay );
 }
 
 void initCalendar() {
@@ -69,15 +69,32 @@ void initCalendar() {
   startYear = startDate.getYear();
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
+  now = Calendar.getInstance().getTime();
 }
 
 void draw() {
-  fill(255);
-  drawDaysInMonth( startYear, startMonth, startDay );
+  fill(255);  
+}
+
+void mousePressed() {
+  if (mouseY > HEADER_HEIGHT) {
+    
+    int calCol = mouseX / (CAL_WIDTH / 7);
+    if (layout == 0) {
+      
+      drawDaysInMonth(startYear, startMonth, startDay); // AFTER WE FINALIZE EVENT WINDOW, INSTEAD OF COVERING THE EVENT WINDOW WITH DRAW ALL DAYS IN MONTH, CALCULATE WHICH DAYS ARE BEING COVERED
+      
+      int calRow = (mouseY - HEADER_HEIGHT) / (CAL_HEIGHT / 6);
+      Day drawOn = days.get(calRow * 7 + calCol);
+      justDrawnEventOn = drawOn;
+      drawOn.newEventWindow();
+    }    
+  }
 }
 
 void drawDaysInMonth(int y, int m, int d) {
-  Calendar testCal = new GregorianCalendar( y, m, d );
+  layout = 0;
+  testCal = new GregorianCalendar( y, m, d );
   Event[] theseEvents = events.getEventsInMonth(y, m);
   boolean switched = false;
   int col = 150;
@@ -101,44 +118,14 @@ void drawDaysInMonth(int y, int m, int d) {
       }
     }
     day.display(dayNum, 0, col); // position i, layout 0, color 0
+    days.add(day);
     testCal.add( Calendar.DATE, 1 );
     dayNum++;
   }
 }
 
 public void controlEvent(ControlEvent theEvent) {
-  println(theEvent.getController().getName());
-  n = 0;
-}
-
-// function colorA will receive changes from 
-// controller with name colorA
-public void colorA(int theValue) {
-  println("a button event from colorA: "+theValue);
-  c1 = c2;
-  c2 = color(0,160,100);
-}
-
-// function colorB will receive changes from 
-// controller with name colorB
-public void colorB(int theValue) {
-  println("a button event from colorB: "+theValue);
-  c1 = c2;
-  c2 = color(150,0,0);
-}
-
-// function colorC will receive changes from 
-// controller with name colorC
-public void colorC(int theValue) {
-  println("a button event from colorC: "+theValue);
-  c1 = c2;
-  c2 = color(255,255,0);
-}
-
-public void play(int theValue) {
-  println("a button event from buttonB: "+theValue);
-  c1 = c2;
-  c2 = color(0,0,0);
+  println(theEvent.getController().getValue());
 }
 
 
