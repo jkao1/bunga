@@ -18,4 +18,4 @@ Why is the font so blurry? :(
 --| Joyce: draw events on each day
 - 6/8
 --| Jason: made UI of days prettier, edited EventCollection, CONTROLP5  
-    Joyce: worked on day and week layout 
+--| Joyce: worked on day and week layout 
