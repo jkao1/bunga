@@ -182,6 +182,16 @@ class Day {
     events.add(e);
   }
   
+  boolean mouseOnEvent() {
+    int topY = ypos + 35;
+    int botY = ypos + 35 + (events.size() + 1) * 17;
+    return mouseY >= topY && mouseY <= botY;
+  }
+  
+  void editEvent() {
+    // draw new stuff here;
+  }
+  
   boolean isDate(Date d) {
     return year == d.getYear() && month == d.getMonth() && date == d.getDay();
   }
