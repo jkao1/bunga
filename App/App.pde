@@ -49,6 +49,21 @@ void setup() {
      
   initCalendar();
   drawDaysInMonth( startYear, startMonth, startDay );
+  drawHeader(0);
+}
+
+void drawHeader(int layout){
+  if (layout == 0){ //month
+    rect(0, 10 + navButtonHeight, CAL_WIDTH, 50);
+    fill(0);
+    font = loadFont("ArialHebrew-120.vlw");
+    textFont(font, 40);
+    text(months[Calendar.MONTH] + " " + Calendar.YEAR, 0, 50 + navButtonHeight);
+    fill(255);
+  } else if (layout == 1){ //week
+  } else if (layout == 2) { // day
+  } else if (layout == 3) { // year
+  }
 }
 
 void drawDay(int y, int m, int d){
