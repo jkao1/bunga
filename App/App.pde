@@ -53,17 +53,20 @@ void setup() {
 }
 
 void drawHeader(int layout){
+  rect(0, 10 + navButtonHeight, CAL_WIDTH, 50);
+  fill(0);
+  font = loadFont("ArialHebrew-120.vlw");
+  textFont(font, 40);
   if (layout == 0){ //month
-    rect(0, 10 + navButtonHeight, CAL_WIDTH, 50);
-    fill(0);
-    font = loadFont("ArialHebrew-120.vlw");
-    textFont(font, 40);
     text(months[Calendar.MONTH] + " " + Calendar.YEAR, 0, 50 + navButtonHeight);
-    fill(255);
   } else if (layout == 1){ //week
+    text(months[Calendar.MONTH] + " " + Calendar.YEAR, 0, 50 + navButtonHeight);
   } else if (layout == 2) { // day
+    text(months[Calendar.MONTH] + " " + Calendar.DAY_OF_MONTH, 0, 50 + navButtonHeight);
   } else if (layout == 3) { // year
+    text(Calendar.YEAR + " ", 0, 50 + navButtonHeight);
   }
+  fill(255);
 }
 
 void drawDay(int y, int m, int d){
