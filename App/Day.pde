@@ -1,4 +1,4 @@
-import java.util.*;
+import javax.swing.*;
 
 PFont font;
 
@@ -38,6 +38,7 @@ class Day {
       relY += 35;
       noStroke();
       // draw all the events
+      println(events);
       while (!events.isEmpty()) {
         Event e = events.remove();
         if (e.getType() == 0) {
@@ -115,8 +116,10 @@ class Day {
   }
   
   void newEventWindow() {
-    stroke(0);
-    rect(xpos + 50, ypos - 100, 500, 200);
+    String eventName;
+    eventName = JOptionPane.showInputDialog("Name Your Event:");
+    events.add(new Event(eventName, year, month, date));
+    display();
   }
   
   void addEvent(Event e) {

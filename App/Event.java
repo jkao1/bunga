@@ -8,7 +8,7 @@ public class Event implements Comparable<Event> {
     private Location loc;
     private int type;
     private int col;
-    
+        
     public Event(String name, int year, int month, int date) {
         this.name = name;
         this.year = year;

@@ -40,13 +40,13 @@ class EventCollection {
   Event[] getEventsInWeek(int y, int m, int d) {
     Set<Event> temp = events.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 8 ));
     Event[] output = temp.toArray( new Event[ temp.size() ]);
-    return output;
+    return events.toArray(new Event[events.size()]);
   }
   
   Event[] getEventsInDay(int y, int m, int d) {
     Set<Event> temp = events.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 1 ));
     Event[] output = temp.toArray( new Event[ temp.size() ]);
-    return output;
+    return events.toArray(new Event[events.size()]);
   }
   
   String toString() {
