@@ -59,6 +59,10 @@ public class MyHeap {
         size--;
         return output;
     }
+    
+    public int size() {
+        return size - 1;
+    }
 
     private void pushDown()
     {
@@ -99,6 +103,16 @@ public class MyHeap {
         Event temp = ary[a];
         ary[a] = ary[b];
         ary[b] = temp;
+    }
+    
+    public MyHeap clone()
+    {
+        MyHeap output = new MyHeap();
+        System.out.println(this);
+        for (int i = 1; i < size; i++) {
+           output.add( ary[i] );
+        }
+        return output;
     }
 
     public String toString()

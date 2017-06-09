@@ -8,6 +8,8 @@ final int HEADER_HEIGHT = 100;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
 
+PFont font24;
+PFont font12;
 import controlP5.*;
 Calendar testCal; // for rolling & adding when drawing the layouts (like a test charge xd we use it to do relative stuff)
 Date now;
@@ -28,6 +30,9 @@ void setup() {
   size(1050, 740);
   days = new DayCollection();
   cp5 = new ControlP5(this);
+  
+  font24 = loadFont("ArialHebrew-24.vlw");
+  font12 = loadFont("ArialHebrew-12.vlw");
   
   // create a new button with name 'buttonA'
   cp5.addButton("Day")
@@ -55,7 +60,7 @@ void setup() {
 void drawHeader(int layout){
   rect(0, 10 + navButtonHeight, CAL_WIDTH, 50);
   fill(0);
-  font = loadFont("ArialHebrew-120.vlw");
+  PFont font = loadFont("ArialHebrew-120.vlw");
   textFont(font, 40);
   if (layout == 0){ //month
     text(months[Calendar.MONTH] + " " + Calendar.YEAR, 0, 50 + navButtonHeight);
@@ -83,7 +88,6 @@ void drawDaysInWeek(int y, int m, int d){
   Calendar tempCal = Calendar.getInstance();
   tempCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
   for(int i = 0; i < 7; i++){ //covers year and month rollovers
-    System.out.println(sdf.format(tempCal.getTime()));
     int dayNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(3, 5));
     int monthNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(0, 2));
     int yearNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(6));
@@ -126,13 +130,9 @@ void mousePressed() {
   if (mouseY > HEADER_HEIGHT) {
     
     int calCol = mouseX / (CAL_WIDTH / 7);
-    if (layout == 0) {
-      
-      drawDaysInMonth(startYear, startMonth, startDay); // AFTER WE FINALIZE EVENT WINDOW, INSTEAD OF COVERING THE EVENT WINDOW WITH DRAW ALL DAYS IN MONTH, CALCULATE WHICH DAYS ARE BEING COVERED
-      
+    if (layout == 0) {      
       int calRow = (mouseY - HEADER_HEIGHT) / (CAL_HEIGHT / 6);
       Day drawOn = days.get(calRow * 7 + calCol);
-      justDrawnEventOn = drawOn;
       drawOn.newEventWindow();
     }    
   }
@@ -155,6 +155,7 @@ void drawDaysInMonth(int y, int m, int d) {
       day.addEvent( theseEvents[eventTracker] );
       eventTracker++;
     }
+     
     if ( day.getDate() == 1 ) {
       if (switched) {
         col = 150;
@@ -162,7 +163,8 @@ void drawDaysInMonth(int y, int m, int d) {
         col = 0;
         switched = true;
       }
-    }
+    }     
+
     day.display(dayNum, 0, col); // position i, layout 0, color 0
     days.add(day);
     testCal.add( Calendar.DATE, 1 );

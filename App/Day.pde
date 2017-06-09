@@ -1,6 +1,5 @@
 import java.util.*;
-
-PFont font;
+import javax.swing.*;
 
 class Day {
 
@@ -16,51 +15,15 @@ class Day {
     events = new MyHeap();
   }
   
-  void display() {
-    stroke(200);
-    rect(xpos, ypos, CAL_WIDTH / 7, CAL_HEIGHT / 6);
-      
-      int relX = xpos;
-      int relY = ypos;
-      font = loadFont("ArialHebrew-120.vlw");
-      textFont(font, 24);
-      fill(col);
-      if (date < 10) {
-        text(Integer.toString(date), // draw numbers on each day
-             xpos + CAL_WIDTH / 7 - 20,
-             ypos + 30);
-      } else {
-        text(Integer.toString(date), // draw numbers on each day
-             xpos + CAL_WIDTH / 7 - 32,
-             ypos + 30);
-      }
-      textFont(font, 12);
-      relY += 35;
-      noStroke();
-      // draw all the events
-      while (!events.isEmpty()) {
-        Event e = events.remove();
-        if (e.getType() == 0) {
-          fill(220, 240, 210); // pale green
-        } else if (e.getType() == 1) {
-          fill(210, 230, 230); // pale blue
-        } else {
-          fill(210, 220, 210); // dark green
-        }
-        rect(relX+10, relY, CAL_WIDTH / 7 - 20, 15);
-        fill(0);
-        // write the event
-        text(e.toString(), relX + 20, relY + 12);
-        relY += 17;
-      }      
-      fill(255);
-      noStroke();
-  }
-  
   void display(int i, int layout, int col) {
     this.i = i;
     this.layout = layout;
     this.col = col;
+    MyHeap clone = null;
+    if (events.size() > 0) {
+       clone = events.clone();
+       System.out.println(clone);
+    }
     stroke(200);
     if (layout == 0) { // month layout
       xpos = (i % 7) * CAL_WIDTH / 7;
@@ -69,8 +32,7 @@ class Day {
       
       int relX = xpos;
       int relY = ypos;
-      font = loadFont("ArialHebrew-120.vlw");
-      textFont(font, 24);
+      textFont(font24, 24);
       fill(col);
       if (date < 10) {
         text(Integer.toString(date), // draw numbers on each day
@@ -81,12 +43,12 @@ class Day {
              xpos + CAL_WIDTH / 7 - 32,
              ypos + 30);
       }
-      textFont(font, 12);
+      textFont(font12, 12);
       relY += 35;
       noStroke();
       // draw all the events
-      while (!events.isEmpty()) {
-        Event e = events.remove();
+      while (events.size() > 0 && clone != null && !clone.isEmpty()) {
+        Event e = clone.remove();
         if (e.getType() == 0) {
           fill(220, 240, 210); // pale green
         } else if (e.getType() == 1) {
@@ -100,6 +62,7 @@ class Day {
         text(e.toString(), relX + 20, relY + 12);
         relY += 17;
       }      
+      
       fill(255);
       
     } else if(layout == 1) { // week layout
@@ -110,6 +73,7 @@ class Day {
       rect(0, ypos, 75, yChange);
       fill(0);
       text("All Day", 0, ypos);
+      textFont(font12, 12);
       fill(255);
       ypos += yChange;
       String noon = " AM";
@@ -159,8 +123,7 @@ class Day {
       rect(0, (currentHour * yChange) + 120 + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
       
     } else { // day layout
-      font = loadFont("ArialHebrew-120.vlw");
-      textFont(font, 24);
+      textFont(font24, 24);
       ypos = 120;
       xpos = 0;
       int yChange = (CAL_HEIGHT - 120) / 25;
@@ -203,12 +166,16 @@ class Day {
   }
   
   void removeEventWindow() {
-    display();
+    
   }
   
   void newEventWindow() {
     stroke(0);
-    rect(xpos + 50, ypos - 100, 500, 200);
+    String eventName = JOptionPane.showInputDialog("Event Name:");
+    if (eventName != null) {
+      addEvent(new Event(eventName, year, month, date));
+    }
+    display(i, layout, col);
   }
   
   void addEvent(Event e) {
