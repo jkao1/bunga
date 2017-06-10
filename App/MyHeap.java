@@ -113,6 +113,16 @@ public class MyHeap {
         }
         return output;
     }
+    
+    public Event get(int i)
+    {
+        MyHeap clone = clone();
+        while ( i > 1 ) {
+            clone.remove();
+            i--;
+        }
+        return clone.remove();
+    }
 
     public String toString()
     {

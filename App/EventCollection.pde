@@ -1,14 +1,16 @@
-import java.util.*;
-
 class EventCollection {
   
-  TreeSet<Event> events;
+  TreeSet<Event> treeSetEvents;
+  PrintWriter out;
   
   EventCollection(String filename) {
-    events = new TreeSet<Event>();
+    out = createWriter("hi"); 
+    out.println("hi");
+    treeSetEvents = new TreeSet<Event>();
     String[] lines = loadStrings(filename);
+    print(lines.length);
     for (String line : lines) {
-      String[] ary = line.split(",");      
+      String[] ary = line.split(","); 
       String name;        
       int year, month, date;
       String description =  "";
@@ -27,30 +29,40 @@ class EventCollection {
       if (ary.length > 6) {
         type = Integer.parseInt(ary[6]);
       }
-      events.add( new Event( name, year, month, date, duration, description, type));
+      treeSetEvents.add( new Event( name, year, month, date, duration, description, type));
     }    
   }
   
   Event[] getEventsInMonth(int y, int m) {
-    Set<Event> temp = events.subSet( new Event( "", y, m, 1 ), new Event( "", y, m + 1, 1 ));
+    Set<Event> temp = treeSetEvents.subSet( new Event( "", y, m, 1 ), new Event( "", y, m + 1, 1 ));
     Event[] output = temp.toArray( new Event[ temp.size() ]);
-    return events.toArray(new Event[events.size()]);
+    return treeSetEvents.toArray(new Event[treeSetEvents.size()]);
   }
   
   Event[] getEventsInWeek(int y, int m, int d) {
-    Set<Event> temp = events.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 8 ));
+    Set<Event> temp = treeSetEvents.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 8 ));
     Event[] output = temp.toArray( new Event[ temp.size() ]);
-    return output;
+    return treeSetEvents.toArray(new Event[treeSetEvents.size()]);
   }
   
   Event[] getEventsInDay(int y, int m, int d) {
-    Set<Event> temp = events.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 1 ));
+    Set<Event> temp = treeSetEvents.subSet( new Event( "", y, m, d ), new Event( "", y, m, d + 1 ));
     Event[] output = temp.toArray( new Event[ temp.size() ]);
-    return output;
+    return treeSetEvents.toArray(new Event[treeSetEvents.size()]);
+  }
+  
+  void add(Event e) {
+    treeSetEvents.add(e);
+    out.println(e.writeOutString());
+  }
+  
+  void close() {
+    out.flush();
+    out.close();
   }
   
   String toString() {
-    return events.toString();
+    return treeSetEvents.toString();
   }
   
 }

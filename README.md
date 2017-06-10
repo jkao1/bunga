@@ -1,6 +1,7 @@
 # calendar-wu
 Why is the font so blurry? :(
 ## Bugs
+- duplicate events from input file do not work
 
 ## Features
 - displays days within any given month and year in a grid
@@ -19,3 +20,5 @@ Why is the font so blurry? :(
 - 6/8
 --| Jason: made UI of days prettier, edited EventCollection, CONTROLP5  
 --| Joyce: worked on day and week layout 
+-- 6/10
+--| Jason: data management

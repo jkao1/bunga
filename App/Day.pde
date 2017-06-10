@@ -7,23 +7,22 @@ class Day {
 
   int year, month, date;
   int xpos, ypos;
-  int i, layout, col;
-  MyHeap events;
+  int i, col;
+  MyHeap todayEvents;
 
   Day(int year, int month, int date) {
     this.year = year;
     this.month = month;
     this.date = date;
-    events = new MyHeap();
+    todayEvents = new MyHeap();
   }
   
-  void display(int i, int layout, int col) {
+  void display(int i, int col) {
     this.i = i;
-    this.layout = layout;
     this.col = col;
     MyHeap clone = null;
-    if (events.size() > 0) {
-       clone = events.clone();
+    if (todayEvents.size() > 0) {
+       clone = todayEvents.clone();
     }
     stroke(200);
     if (layout == 0) { // month layout
@@ -48,9 +47,9 @@ class Day {
       relY += 35;
       noStroke();
       // draw all the events
-      while (events.size() > 0 && clone != null && !clone.isEmpty()) {
+      while (todayEvents.size() > 0 && clone != null && !clone.isEmpty()) {
         Event e = clone.remove();
-        if (events.size() - clone.size() > 3) {
+        if (todayEvents.size() - clone.size() > 3) {
           fill(0);
           text(clone.size() + 1 + " more...", relX + 20, relY + 14);
           break;
@@ -176,32 +175,38 @@ class Day {
   }
   
   void newEventWindow() {
+    println("new event window on Day " + month + "/" + date);
     stroke(0);
     String eventName = JOptionPane.showInputDialog("Event Name:");
     if (eventName != null) {
       addEvent(new Event(eventName, year, month, date));
     }
-    display(i, layout, col);
   }
   
   void addEvent(Event e) {
+    todayEvents.add(e);
     events.add(e);
   }
   
-  boolean mouseOnEvent() {
+  boolean hasMouseOnEvent() {
     int topY = ypos + 35;
-    int botY = ypos + 35 + (events.size()) * MONTH_EVENT_HEIGHT;
+    int botY = ypos + 35 + (todayEvents.size()) * MONTH_EVENT_HEIGHT;
     return mouseY >= topY && mouseY <= botY;
   }
   
-  void editEvent() {
+  void editEvent() {    
     int eventNumber = 0;
     int topY = ypos + 35;
     while (mouseY > topY) {
       topY += MONTH_EVENT_HEIGHT;
       eventNumber++;
+    }    
+    Event editMe = todayEvents.get(eventNumber);
+    println("edit event " + editMe + " on Day " + month + "/" + date);
+    String newName = JOptionPane.showInputDialog("New Name:");
+    if (newName != null) {
+      editMe.setName(newName);
     }
-    print(events.get(eventNumber));
   }
   
   boolean isDate(Date d) {
