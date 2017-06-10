@@ -5,7 +5,7 @@ import java.io.*;
 
 final int CAL_WIDTH = 1050;
 final int CAL_HEIGHT = 660;
-final int HEADER_HEIGHT = 100;
+final int HEADER_HEIGHT = 140;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
 
@@ -20,8 +20,8 @@ int startYear, startMonth, startDay;
 int mouseClicks, mouseDubClickStartTime, mouseDubClickEndTime;
 String[] months = {"January", "February", "March", "April", "May", "June", 
                    "July", "August", "September", "October", "November", "December"};
-String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-                       "Saturday"};
+String[] daysOfWeek = {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri",
+                       "Sat"};
 ControlP5 cp5;
 
 int layout;
@@ -57,19 +57,33 @@ void setup() {
      
   initCalendar();
   drawDaysInMonth( startYear, startMonth, startDay );
-  drawHeader(0);
 }
 
 void drawHeader(int layout){
-  rect(0, 10 + navButtonHeight, CAL_WIDTH, 50);
   fill(0);
   PFont font = loadFont("ArialHebrew-120.vlw");
   textFont(font, 40);
   if (layout == 0){ //month
-    text(months[Calendar.MONTH] + " " + Calendar.YEAR, 0, 50 + navButtonHeight);
+    text(months[Calendar.MONTH] + " " + Calendar.YEAR, 10, 55 + navButtonHeight);
+    textFont(font, 20);
+    String space = "                 ";
+    text("Sun"+space+"  Mon"+space+" Tues"+space+"  Wed"+space+"  Thurs"+space+"Fri"+space+"    Sat", 10, 90 + navButtonHeight);
   } else if (layout == 1){ //week
     text(months[Calendar.MONTH] + " " + Calendar.YEAR, 0, 50 + navButtonHeight);
-  } else if (layout == 2) { // day
+    textFont(font, 20);
+    String space = "                ";
+    SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
+    Calendar tempCal = Calendar.getInstance();
+    tempCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+    int weekDate = tempCal.get(Calendar.DATE);
+    int xChange = (CAL_WIDTH - 75) / 7 + 5;
+    int xpos = 75;
+    int ypos = 80 + navButtonHeight;
+    for(int i = 0; i < 7; i++){
+      text(daysOfWeek[i] + "  " + (weekDate + i), xpos, ypos);
+      xpos += xChange;
+    }
+} else if (layout == 2) { // day
     text(months[Calendar.MONTH] + " " + Calendar.DAY_OF_MONTH, 0, 50 + navButtonHeight);
   } else if (layout == 3) { // year
     text(Calendar.YEAR + " ", 0, 50 + navButtonHeight);
@@ -78,12 +92,16 @@ void drawHeader(int layout){
 }
 
 void drawDay(int y, int m, int d){
+  background(255);
+  drawHeader(2);
   Day day = new Day(y, m, d);
   Event[] e = events.getEventsInDay(y, m, d);
   day.display(d, 255); //change col
 } 
 
 void drawDaysInWeek(int y, int m, int d){
+  background(255);
+  drawHeader(1);
   Event[] e = events.getEventsInWeek(y, m, d);
   SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
   Calendar tempCal = Calendar.getInstance();
@@ -99,7 +117,9 @@ void drawDaysInWeek(int y, int m, int d){
 }
 
 void drawYear(int y, int m, int d){
-  int xpos = 20;
+  background(255);
+  drawHeader(3);
+  int xpos = 40;
   int ypos = 120;
   int monthWidth = (CAL_WIDTH - 40) / 4;
   int monthHeight = CAL_HEIGHT / 3;
@@ -107,13 +127,15 @@ void drawYear(int y, int m, int d){
   int col = 150;
   PFont font = loadFont("ArialHebrew-120.vlw");
   Calendar cal = new GregorianCalendar();
-  textFont(font, 13);
   for(int i = 0; i < 12; i++){
     rect(xpos, ypos, monthWidth, monthHeight);
     fill(0);
+    textFont(font, 20);
     text(months[i], xpos, ypos);
     textFont(font, 10);
-    text("S      M      T      W      T      F      S", xpos, ypos + 18);
+    text("S        M        T        W        T        F        S", xpos, ypos + 20);
+    
+    //finding right dates
     cal.set(y, i, 1);
     int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
     if(dYear < 0){
@@ -128,8 +150,11 @@ void drawYear(int y, int m, int d){
     startMonth = startDate.getMonth();
     startDay = startDate.getDate();
     
+    
+    //drawing dates
+    textFont(font, 15);
     int dayX = xpos;
-    int dayY = ypos;
+    int dayY = ypos + 40;
     for(int t = 0; t < 42; t++){
       if ( cal.get(Calendar.DATE) == 1 ) {
         if (switched) {
@@ -141,23 +166,18 @@ void drawYear(int y, int m, int d){
       }
       fill(col);
       text(cal.get(Calendar.DATE), dayX, dayY);
-      dayX += 15;
+      dayX += 30;
       if(t % 7 == 6){
         dayX = xpos;
-        dayY += 12;
+        dayY += 20;
       }
+      cal.add(Calendar.DATE, 1);
     }  
-    /*
-    firstWeekdayOfMonth = cal.get(Calendar.DAY_OF_WEEK); 
-    for (int d = 1; d < firstWeekdayOfMonth; d++) { //space
-      text("       ", dayX, dayY);
-      dayX += 7;
-    }
-    */
+    switched = false;
     fill(255);
     xpos += monthWidth;
     if(i % 4 == 3){
-      xpos = 20;
+      xpos = 40;
       ypos += monthHeight;
     }
   }
@@ -223,6 +243,8 @@ Day findDay() {
 }
 
 void drawDaysInMonth(int y, int m, int d) {
+  background(255);
+  drawHeader(0);
   layout = 0;
   testCal = new GregorianCalendar( y, m, d );
   Event[] theseEvents = events.getEventsInMonth(y, m);
@@ -260,25 +282,21 @@ void drawDaysInMonth(int y, int m, int d) {
 public void controlEvent(ControlEvent theEvent) {
   if(theEvent.controller().getName() == "Day"){
     layout = 2;
-    background(255);
     drawDay(startYear, startMonth, startDay);
   }
   
   if(theEvent.controller().getName() == "Week"){
     layout = 1;
-    background(255);
     drawDaysInWeek(startYear, startMonth, startDay);
   }
   
   if(theEvent.controller().getName() == "Month"){
     layout = 0;
-    background(255);
     drawDaysInMonth(startYear, startMonth, startDay);
   }
   
   if(theEvent.controller().getName() == "Year"){
     layout = 3;
-    background(255);
     drawYear(startYear, startMonth, startDay);
   }
 }

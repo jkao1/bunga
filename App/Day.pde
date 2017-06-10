@@ -71,14 +71,15 @@ class Day {
       fill(255);
       
     } else if(layout == 1) { // week layout
-      ypos = 120;
+      ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT) / 6) - 20;
       xpos = 75;
       int xChange = (CAL_WIDTH - 75) / 7;
-      int yChange = (CAL_HEIGHT - 120) / 25;
+      int yChange = (CAL_HEIGHT - HEADER_HEIGHT) / 25;
+      fill(255);
       rect(0, ypos, 75, yChange);
       fill(0);
-      text("All Day", 0, ypos);
       textFont(font12, 12);
+      text("All Day", 0, ypos);
       fill(255);
       ypos += yChange;
       String noon = " AM";
@@ -107,29 +108,23 @@ class Day {
       } 
       fill(255);
       for(int v = 0; v < 7; v++){
-        ypos = 120;
+        ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT) / 6) - 20;
         for(int n = 0; n < 25; n++){
           rect(xpos, ypos, xChange, yChange);
-          if(n == 0){ //prints out 00s??
-            fill(0);
-            text(Integer.toString(i), xpos, ypos);
-            fill(255);
-          }
           ypos += yChange;
         } 
         xpos += xChange;
       }
-      
       Date d = new Date();
       DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
       int currentHour = Integer.parseInt(dateFormat.format(d).substring(11, 13));
       int currentMin = Integer.parseInt(dateFormat.format(d).substring(14, 16));
       fill(255, 0, 0);
-      rect(0, (currentHour * yChange) + 120 + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
+      rect(xpos, (currentHour * yChange) + HEADER_HEIGHT + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
       
     } else { // day layout
       textFont(font24, 24);
-      ypos = 120;
+      ypos = HEADER_HEIGHT;
       xpos = 0;
       int yChange = (CAL_HEIGHT - 120) / 25;
       rect(xpos, ypos, CAL_WIDTH, yChange);
@@ -166,7 +161,8 @@ class Day {
       int currentHour = Integer.parseInt(dateFormat.format(d).substring(11, 13));
       int currentMin = Integer.parseInt(dateFormat.format(d).substring(14, 16));
       fill(255, 0, 0);
-      rect(xpos, (currentHour * yChange) + 120 + ((currentMin / 60.) * yChange), CAL_WIDTH, 2); 
+      rect(xpos, ((1 + currentHour) * yChange) + HEADER_HEIGHT + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
+      
     }
   }
   
@@ -184,8 +180,7 @@ class Day {
   }
   
   void addEvent(Event e) {
-    todayEvents.add(e);
-    events.add(e);
+    todayEvents.add(e);  
   }
   
   boolean hasMouseOnEvent() {
