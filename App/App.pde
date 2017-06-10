@@ -131,7 +131,7 @@ void mousePressed() {
     
     int calCol = mouseX / (CAL_WIDTH / 7);
     if (layout == 0) {      
-      int calRow = (mouseY - HEADER_HEIGHT) / (CAL_HEIGHT / 6);
+      int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT - HEADER_HEIGHT)/ 6);
       Day drawOn = days.get(calRow * 7 + calCol);
       if (drawOn.mouseOnEvent()) {
         drawOn.editEvent();

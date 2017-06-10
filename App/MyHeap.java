@@ -108,7 +108,6 @@ public class MyHeap {
     public MyHeap clone()
     {
         MyHeap output = new MyHeap();
-        System.out.println(this);
         for (int i = 1; i < size; i++) {
            output.add( ary[i] );
         }

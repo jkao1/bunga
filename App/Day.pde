@@ -1,6 +1,8 @@
 import java.util.*;
 import javax.swing.*;
 
+int MONTH_EVENT_HEIGHT = 17;
+
 class Day {
 
   int year, month, date;
@@ -22,13 +24,12 @@ class Day {
     MyHeap clone = null;
     if (events.size() > 0) {
        clone = events.clone();
-       System.out.println(clone);
     }
     stroke(200);
     if (layout == 0) { // month layout
       xpos = (i % 7) * CAL_WIDTH / 7;
       ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT) / 6) - 20;
-      rect(xpos, ypos, CAL_WIDTH / 7, CAL_HEIGHT / 6);
+      rect(xpos, ypos, CAL_WIDTH / 7, (CAL_HEIGHT) / 6);
       
       int relX = xpos;
       int relY = ypos;
@@ -49,6 +50,11 @@ class Day {
       // draw all the events
       while (events.size() > 0 && clone != null && !clone.isEmpty()) {
         Event e = clone.remove();
+        if (events.size() - clone.size() > 3) {
+          fill(0);
+          text(clone.size() + 1 + " more...", relX + 20, relY + 14);
+          break;
+        }
         if (e.getType() == 0) {
           fill(220, 240, 210); // pale green
         } else if (e.getType() == 1) {
@@ -60,7 +66,7 @@ class Day {
         fill(0);
         // write the event
         text(e.toString(), relX + 20, relY + 12);
-        relY += 17;
+        relY += MONTH_EVENT_HEIGHT;
       }      
       
       fill(255);
@@ -184,12 +190,18 @@ class Day {
   
   boolean mouseOnEvent() {
     int topY = ypos + 35;
-    int botY = ypos + 35 + (events.size() + 1) * 17;
+    int botY = ypos + 35 + (events.size()) * MONTH_EVENT_HEIGHT;
     return mouseY >= topY && mouseY <= botY;
   }
   
   void editEvent() {
-    // draw new stuff here;
+    int eventNumber = 0;
+    int topY = ypos + 35;
+    while (mouseY > topY) {
+      topY += MONTH_EVENT_HEIGHT;
+      eventNumber++;
+    }
+    print(events.get(eventNumber));
   }
   
   boolean isDate(Date d) {
