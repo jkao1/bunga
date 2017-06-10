@@ -27,8 +27,8 @@ class Day {
     stroke(200);
     if (layout == 0) { // month layout
       xpos = (i % 7) * CAL_WIDTH / 7;
-      ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT) / 6) - 20;
-      rect(xpos, ypos, CAL_WIDTH / 7, (CAL_HEIGHT) / 6);
+      ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT - HEADER_HEIGHT) / 6) - 20;
+      rect(xpos, ypos, CAL_WIDTH / 7, (CAL_HEIGHT - HEADER_HEIGHT) / 6) ;
       
       int relX = xpos;
       int relY = ypos;
@@ -126,32 +126,33 @@ class Day {
       textFont(font24, 24);
       ypos = HEADER_HEIGHT;
       xpos = 0;
+      int sideMonth = 350;
       int yChange = (CAL_HEIGHT - 120) / 25;
-      rect(xpos, ypos, CAL_WIDTH, yChange);
+      rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10 , yChange);
       fill(0);
-      text("All Day", xpos, ypos);
+      text("All Day", xpos + sideMonth, ypos);
       fill(255);
       ypos += yChange;
       String noon = " AM";
       for(int n = 0; n <= 1; n++){
         if(n == 0){
-          rect(xpos, ypos, CAL_WIDTH, yChange);
+          rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10, yChange);
           fill(0);
-          text("12 AM", xpos, ypos);
+          text("12 AM", xpos + sideMonth, ypos);
           fill(255);
           ypos += yChange;
         }else if(n == 1){
-          rect(xpos, ypos, CAL_WIDTH, yChange);
+          rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10, yChange);
           fill(0);
-          text("12 PM", xpos, ypos);
+          text("12 PM", xpos + sideMonth, ypos);
           fill(255);
           ypos += yChange;
           noon = " PM";
         } 
         for(int t = 1; t < 12; t++){
-          rect(xpos, ypos, CAL_WIDTH, yChange);
+          rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10, yChange);
           fill(0);
-          text(t + noon, xpos, ypos);
+          text(t + noon, xpos + sideMonth, ypos);
           fill(255);
           ypos += yChange;
         }
@@ -161,7 +162,7 @@ class Day {
       int currentHour = Integer.parseInt(dateFormat.format(d).substring(11, 13));
       int currentMin = Integer.parseInt(dateFormat.format(d).substring(14, 16));
       fill(255, 0, 0);
-      rect(xpos, ((1 + currentHour) * yChange) + HEADER_HEIGHT + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
+      rect(xpos + sideMonth, ((1 + currentHour) * yChange) + HEADER_HEIGHT + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
       
     }
   }

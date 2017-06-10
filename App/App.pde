@@ -4,7 +4,7 @@ import java.text.*;
 import java.io.*;
 
 final int CAL_WIDTH = 1050;
-final int CAL_HEIGHT = 660;
+final int CAL_HEIGHT = 740;
 final int HEADER_HEIGHT = 140;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
@@ -18,10 +18,9 @@ EventCollection events;
 DayCollection days;
 int startYear, startMonth, startDay;
 int mouseClicks, mouseDubClickStartTime, mouseDubClickEndTime;
-String[] months = {"January", "February", "March", "April", "May", "June", 
-                   "July", "August", "September", "October", "November", "December"};
-String[] daysOfWeek = {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri",
-                       "Sat"};
+String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+String[] daysOfWeek = {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
+String[] daysOfWeekFull = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 ControlP5 cp5;
 
 int layout;
@@ -60,16 +59,17 @@ void setup() {
 }
 
 void drawHeader(int layout){
+  Calendar cal = new GregorianCalendar();
   fill(0);
   PFont font = loadFont("ArialHebrew-120.vlw");
   textFont(font, 40);
   if (layout == 0){ //month
-    text(months[Calendar.MONTH] + " " + Calendar.YEAR, 10, 55 + navButtonHeight);
+    text(months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR), 10, 55 + navButtonHeight);
     textFont(font, 20);
     String space = "                 ";
     text("Sun"+space+"  Mon"+space+" Tues"+space+"  Wed"+space+"  Thurs"+space+"Fri"+space+"    Sat", 10, 90 + navButtonHeight);
   } else if (layout == 1){ //week
-    text(months[Calendar.MONTH] + " " + Calendar.YEAR, 0, 50 + navButtonHeight);
+    text(months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR), 0, 50 + navButtonHeight);
     textFont(font, 20);
     String space = "                ";
     SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
@@ -84,9 +84,13 @@ void drawHeader(int layout){
       xpos += xChange;
     }
 } else if (layout == 2) { // day
-    text(months[Calendar.MONTH] + " " + Calendar.DAY_OF_MONTH, 0, 50 + navButtonHeight);
+    text(months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DAY_OF_MONTH), 0, 50 + navButtonHeight);
+    textFont(font, 30);
+    text(daysOfWeekFull[cal.get(Calendar.DAY_OF_WEEK)-1], 0, 80 + navButtonHeight);
   } else if (layout == 3) { // year
-    text(Calendar.YEAR + " ", 0, 50 + navButtonHeight);
+    text(cal.get(Calendar.YEAR) + " ", 0, 50 + navButtonHeight);
+    textFont(font, 30);
+    text(cal.get(Calendar.DATE), 0, 90 + navButtonHeight);
   }
   fill(255);
 }
@@ -94,8 +98,11 @@ void drawHeader(int layout){
 void drawDay(int y, int m, int d){
   background(255);
   drawHeader(2);
+  fill(100);
+  rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
   Day day = new Day(y, m, d);
   Event[] e = events.getEventsInDay(y, m, d);
+  fill(255);
   day.display(d, 255); //change col
 } 
 
@@ -127,6 +134,7 @@ void drawYear(int y, int m, int d){
   int col = 150;
   PFont font = loadFont("ArialHebrew-120.vlw");
   Calendar cal = new GregorianCalendar();
+  stroke(255);
   for(int i = 0; i < 12; i++){
     rect(xpos, ypos, monthWidth, monthHeight);
     fill(0);
