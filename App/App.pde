@@ -98,7 +98,69 @@ void drawDaysInWeek(int y, int m, int d){
   }
 }
 
-void drawYear(int y, int m, int s){
+void drawYear(int y, int m, int d){
+  int xpos = 20;
+  int ypos = 120;
+  int monthWidth = (CAL_WIDTH - 40) / 4;
+  int monthHeight = CAL_HEIGHT / 3;
+  boolean switched = false;
+  int col = 150;
+  PFont font = loadFont("ArialHebrew-120.vlw");
+  Calendar cal = new GregorianCalendar();
+  textFont(font, 13);
+  for(int i = 0; i < 12; i++){
+    rect(xpos, ypos, monthWidth, monthHeight);
+    fill(0);
+    text(months[i], xpos, ypos);
+    textFont(font, 10);
+    text("S      M      T      W      T      F      S", xpos, ypos + 18);
+    cal.set(y, i, 1);
+    int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
+    if(dYear < 0){
+      cal.add(Calendar.DATE, 7 + dYear);
+    }else{
+      cal.add(Calendar.DATE, dYear);
+    }
+    // calendar is now at first Sunday of the month
+    cal.add(Calendar.DAY_OF_MONTH, - 7);
+    Date startDate = cal.getTime();
+    startYear = startDate.getYear();
+    startMonth = startDate.getMonth();
+    startDay = startDate.getDate();
+    
+    int dayX = xpos;
+    int dayY = ypos;
+    for(int t = 0; t < 42; t++){
+      if ( cal.get(Calendar.DATE) == 1 ) {
+        if (switched) {
+          col = 150;
+        } else {
+          col = 0;
+          switched = true;
+        }
+      }
+      fill(col);
+      text(cal.get(Calendar.DATE), dayX, dayY);
+      dayX += 15;
+      if(t % 7 == 6){
+        dayX = xpos;
+        dayY += 12;
+      }
+    }  
+    /*
+    firstWeekdayOfMonth = cal.get(Calendar.DAY_OF_WEEK); 
+    for (int d = 1; d < firstWeekdayOfMonth; d++) { //space
+      text("       ", dayX, dayY);
+      dayX += 7;
+    }
+    */
+    fill(255);
+    xpos += monthWidth;
+    if(i % 4 == 3){
+      xpos = 20;
+      ypos += monthHeight;
+    }
+  }
 }
 
 void initCalendar() {
@@ -210,11 +272,13 @@ public void controlEvent(ControlEvent theEvent) {
   
   if(theEvent.controller().getName() == "Month"){
     layout = 0;
+    background(255);
     drawDaysInMonth(startYear, startMonth, startDay);
   }
   
   if(theEvent.controller().getName() == "Year"){
     layout = 3;
+    background(255);
     drawYear(startYear, startMonth, startDay);
   }
 }
