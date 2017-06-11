@@ -45,7 +45,7 @@ public class Event implements Comparable<Event> {
     }
     
     public String toString() {
-        return name;
+        return name + " " + year + " " + month + " " + date;
     }
     
     public String toString(boolean b) {

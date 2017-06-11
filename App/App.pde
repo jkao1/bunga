@@ -122,6 +122,9 @@ void drawHeader() {
 }
 
 void drawDay(int y, int m, int d){
+  int originalYear = testCal.get( Calendar.YEAR );
+  int originalMonth = testCal.get( Calendar.MONTH );
+  int originalDate = testCal.get( Calendar.DATE );
   background(255);
   drawHeader();
   fill(255);
@@ -130,7 +133,7 @@ void drawDay(int y, int m, int d){
   PFont font = loadFont("ArialHebrew-120.vlw");
   
   //finding right dates
-  cal.set(y, m, 1);
+  cal.set(originalYear, originalMonth, 1);
   int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
   if(dYear < 0){
     cal.add(Calendar.DATE, 7 + dYear);
@@ -143,6 +146,17 @@ void drawDay(int y, int m, int d){
   startYear = startDate.getYear();
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
+  
+  //
+  //BUG : getEventsInDay doesn't work?
+  //
+  int eventTracker = 0;
+  Event[] theseEvents = events.getEventsInDay( originalYear, originalMonth, originalDate);
+  Day day = new Day( originalYear, originalMonth, originalDate );
+  while (eventTracker < theseEvents.length && theseEvents[eventTracker].onDay( originalYear, originalMonth, originalDate )) { // add all events on day to day
+    day.addEvent( theseEvents[eventTracker] );
+    eventTracker++;
+  }
   
   int dayX = 50;
   int dayY = HEADER_HEIGHT + 20;
@@ -165,7 +179,7 @@ void drawDay(int y, int m, int d){
         switched = true;
       }
     }
-    if(cal.get(Calendar.MONTH) == startMonth && cal.get(Calendar.DATE) == startDay){
+    if(cal.get(Calendar.MONTH) == originalMonth && cal.get(Calendar.DATE) == originalDate){
       fill(255, 0, 0);
       ellipse(dayX + 6, dayY - 5, 20, 20);
       fill(255);
@@ -183,14 +197,13 @@ void drawDay(int y, int m, int d){
   }
   //rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
   fill(255);
-  Day day = new Day(y, m, d);
-  Event[] e = events.getEventsInDay(y, m, d);
   day.display(d, 255); //change col
 } 
 
 void drawDaysInWeek(int y, int m, int d){
   background(255);
   drawHeader();
+  int eventTracker = 0;
   Event[] e = events.getEventsInWeek(y, m, d);
   SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
   Calendar tempCal = Calendar.getInstance();
@@ -356,6 +369,7 @@ void drawMonth() {
       day.addEvent( theseEvents[eventTracker] );
       eventTracker++;
     }
+    System.out.println(day.todayEvents.toString());
     if ( currentDate == 1 ) { // the beginning of the month
       if ( onFocusMonth ) {
         currentColor = gray; // out of focus month, so change back to gray
