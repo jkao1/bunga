@@ -127,12 +127,12 @@ class Day {
       ypos = HEADER_HEIGHT;
       xpos = 0;
       int sideMonth = 350;
-      int yChange = (CAL_HEIGHT - 120) / 25;
-      rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10 , yChange);
+      int yChange = (CAL_HEIGHT - HEADER_HEIGHT) / 25;
+      stroke(0);
+      rect(xpos + sideMonth, ypos - yChange, CAL_WIDTH - sideMonth - 10 , yChange);
       fill(0);
-      text("All Day", xpos + sideMonth, ypos);
+      text("All Day", xpos + sideMonth, ypos );
       fill(255);
-      ypos += yChange;
       String noon = " AM";
       for(int n = 0; n <= 1; n++){
         if(n == 0){

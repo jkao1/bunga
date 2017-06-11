@@ -98,11 +98,53 @@ void drawHeader(int layout){
 void drawDay(int y, int m, int d){
   background(255);
   drawHeader(2);
-  fill(100);
-  rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
+  fill(255);
+  Calendar cal = new GregorianCalendar();
+  fill(0);
+  PFont font = loadFont("ArialHebrew-120.vlw");
+  textFont(font, 10);
+  text("S        M        T        W        T        F        S", 0, HEADER_HEIGHT);
+  //finding right dates
+  cal.set(y, m, 1);
+  int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
+  if(dYear < 0){
+    cal.add(Calendar.DATE, 7 + dYear);
+  }else{
+    cal.add(Calendar.DATE, dYear);
+  }
+  // calendar is now at first Sunday of the month
+  cal.add(Calendar.DAY_OF_MONTH, - 7);
+  Date startDate = cal.getTime();
+  startYear = startDate.getYear();
+  startMonth = startDate.getMonth();
+  startDay = startDate.getDate();
+  
+  int dayX = 0;
+  int dayY = HEADER_HEIGHT + 20;
+  boolean switched = false;
+  int col = 150;
+  for(int t = 0; t < 42; t++){
+    if ( cal.get(Calendar.DATE) == 1 ) {
+      if (switched) {
+        col = 150;
+      } else {
+        col = 0;
+        switched = true;
+      }
+    }
+    fill(col);
+    text(cal.get(Calendar.DATE), dayX, dayY);
+    dayX += 30;
+    if(t % 7 == 6){
+      dayX = 0;
+      dayY += 20;
+    }
+    cal.add(Calendar.DATE, 1);  
+  }
+  //rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
+  fill(255);
   Day day = new Day(y, m, d);
   Event[] e = events.getEventsInDay(y, m, d);
-  fill(255);
   day.display(d, 255); //change col
 } 
 
@@ -124,12 +166,13 @@ void drawDaysInWeek(int y, int m, int d){
 }
 
 void drawYear(int y, int m, int d){
+  //System.out.println(y);
   background(255);
   drawHeader(3);
   int xpos = 40;
   int ypos = 120;
   int monthWidth = (CAL_WIDTH - 40) / 4;
-  int monthHeight = CAL_HEIGHT / 3;
+  int monthHeight = (CAL_HEIGHT - HEADER_HEIGHT) / 3;
   boolean switched = false;
   int col = 150;
   PFont font = loadFont("ArialHebrew-120.vlw");
@@ -306,6 +349,7 @@ public void controlEvent(ControlEvent theEvent) {
   if(theEvent.controller().getName() == "Year"){
     layout = 3;
     drawYear(startYear, startMonth, startDay);
+    System.out.println(" " + startYear + " " + startMonth + " " + startDay);
   }
 }
 
