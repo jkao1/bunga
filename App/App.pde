@@ -133,33 +133,13 @@ void drawDay() {
   fill(255);
   Calendar cal = new GregorianCalendar();
   fill(0);
-  PFont font = loadFont("ArialHebrew-120.vlw");
-  
-  //finding right dates
-  cal.set(originalYear, originalMonth, 1);
-  int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
-  if(dYear < 0){
-    cal.add(Calendar.DATE, 7 + dYear);
-  }else{
-    cal.add(Calendar.DATE, dYear);
-  }
-  // calendar is now at first Sunday of the month
-  cal.add(Calendar.DAY_OF_MONTH, - 7);
-  Date startDate = cal.getTime();
-  startYear = startDate.getYear();
-  startMonth = startDate.getMonth();
-  startDay = startDate.getDate();
-  
+
   //
   //BUG : getEventsInDay doesn't work?
   //
-  int eventTracker = 0;
-  Event[] theseEvents = events.getEventsInDay( originalYear, originalMonth, originalDate);
+  ArrayList<Event> dayEvents = events.findEvents( originalYear, originalMonth, originalDate );
   Day day = new Day( originalYear, originalMonth, originalDate );
-  while (eventTracker < theseEvents.length && theseEvents[eventTracker].onDay( originalYear, originalMonth, originalDate )) { // add all events on day to day
-    day.addEvent( theseEvents[eventTracker] );
-    eventTracker++;
-  }
+  day.add( dayEvents );
   
   int dayX = 50;
   int dayY = HEADER_HEIGHT + 20;
@@ -208,7 +188,7 @@ void drawDaysInWeek(int y, int m, int d){
   background(255);
   drawHeader();
   int eventTracker = 0;
-  Event[] e = events.getEventsInWeek(y, m, d);
+  ArrayList<Event> e = events.findEvents(y, m, d);
   SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
   Calendar tempCal = Calendar.getInstance();
   tempCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -236,8 +216,7 @@ void drawMonth() {
   background(255);
   drawHeader();
   layout = 0;
-  Event[] theseEvents = events.getEventsInMonth( testCal.get( Calendar.YEAR ), testCal.get( Calendar.MONTH ) );
-  
+    
   boolean onFocusMonth = false;  
   int currentColor = gray;  
   int dayNum = 0;
@@ -258,12 +237,7 @@ void drawMonth() {
     }
     
     Day day = new Day( currentYear, currentMonth, currentDate, dayNum, currentColor );
-    // add all events on day to day
-    while (eventTracker < theseEvents.length && theseEvents[eventTracker].onDay( currentYear, currentMonth, currentDate )) {
-      day.addEvent( theseEvents[eventTracker] );
-      eventTracker++;
-    }
-    
+    println(day);
     day.display();
     days.add(day);
     testCal.add( Calendar.DATE, 1 );
@@ -461,8 +435,4 @@ public void Today(int value) {
   if (layout == 3) {
     drawYear();
   }
-}
-
-void stop() {
-  events.close();
 }

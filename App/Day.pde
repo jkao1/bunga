@@ -9,7 +9,7 @@ class Day {
     this.year = year;
     this.month = month;
     this.date = date;
-    todayEvents = new ArrayList<Event>();
+    todayEvents = events.findEvents( year, month, date );
   }
   
   Day(int year, int month, int date, int dayNum, int col) {
@@ -254,6 +254,12 @@ class Day {
     todayEvents.add(e);  
   }
   
+  void add(ArrayList<Event> ary) {
+    for (Event e : ary) {
+      todayEvents.add(e);
+    }
+  }
+  
   boolean hasMouseOnWindow() {
     return mouseY >= ypos && mouseY <= ypos + CAL_HEIGHT / 6;
   }
@@ -307,7 +313,7 @@ class Day {
   }
   
   String toString() {
-    return month + 1 + "/" + date + "/" + (year + 1900);
+    return month + "/" + date + "/" + year;
   }
 
 }
