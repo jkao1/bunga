@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 public class MyBST {
 
@@ -9,12 +8,18 @@ public class MyBST {
     
     public static void main(String[] args) {
         MyBST b = new MyBST( args[0] );
-        b.printInOrder();
-        System.out.println( b.findEvents( 2017, 6, 23 ));
+        System.out.println( b.getAllEvents());
     }
 
     public MyBST() {
         root = null;
+    }
+    
+    public MyBST(String[] lines)
+    {
+        for (String line : lines) {
+            insertEvent(line);
+        }
     }
     
     public MyBST(String filename) {
@@ -22,38 +27,42 @@ public class MyBST {
         Scanner in = null;
         try {
             in = new Scanner( new File( filename ));
+            System.out.println(in);
             while ( in.hasNextLine() ) {
-                String lin = in.nextLine();
-                System.out.println(lin);
-                Scanner line = new Scanner( lin );
-            
-                line.useDelimiter(",");            
-                String name;
-                int year, month, date;
-                String description =  "";
-                int duration = 60;
-                int type = (int) (Math.random() * 4);
-                System.out.println(3);
-                name = line.next();
-                System.out.println(3);
-                year = line.nextInt();
-                month = line.nextInt();
-                date = line.nextInt();
-                if ( line.hasNext() ) {
-                    duration = line.nextInt();
-                }
-                if ( line.hasNext() ) {
-                    description = line.next();
-                }
-                if ( line.hasNext() ) {
-                    type = line.nextInt();
-                }
-                insert( new Event( name, year, month, date, duration, description, type ));
+                insertEvent( in.nextLine() );                
             }
         } catch (IOException e) {
             System.out.println("FILE NOT FOUND: " + filename);
         }
     }
+    
+    private void insertEvent(String lin)
+    {
+        Scanner line = new Scanner( lin );            
+        line.useDelimiter(",");            
+        String name;
+        int year, month, date;
+        String description =  "";
+        int duration = 60;
+        int type = (int) (Math.random() * 4);
+        name = line.next();
+        year = line.nextInt();
+        month = line.nextInt();
+        date = line.nextInt();
+        if ( line.hasNext() ) {
+            duration = line.nextInt();
+        }
+        if ( line.hasNext() ) {
+            description = line.next();
+        }
+        if ( line.hasNext() ) {
+            type = line.nextInt();
+        }
+        Event e = new Event( name, year, month, date, duration, description, type );
+        insert( e );
+    }
+    
+    
             
 
     public boolean isEmpty()
@@ -151,6 +160,28 @@ public class MyBST {
         }
         return isFound;
     }
+    
+    public Event getEvent(Event e)
+    {
+        return searchFor(root, e);
+    }
+
+    private Event searchFor(Node node, Event e)
+    {
+        if (node == null) { // reached the end
+            return new Event("BAD EVENT", -1, -1, -1);
+        }
+        Event nodeEvent = node.getEvent();
+        if ( e.compareTo( nodeEvent ) < 0 ) {
+            node = node.getLeft();
+        } else if ( e.compareTo( nodeEvent ) > 0 ) {
+            node = node.getRight();
+        } else {
+            return node.getEvent();
+        }
+        searchFor( node, e );
+        return new Event("BAD EVENT", -1, -1, -1);
+    }
 
     public ArrayList<Event> findEvents(int year, int month, int date)
     {
@@ -188,6 +219,27 @@ public class MyBST {
             System.out.print( node.getEvent() + ", " );
             printInOrder( node.getRight() );
         }
+    }
+
+    public Event[] getAllEvents() {
+        return getAllEvents( root ).toArray(new Event[] {});
+
+    }
+
+    /* solution proposed by https://stackoverflow.com/a/13870328 */
+    private ArrayList<Event> getAllEvents(Node n) {
+        ArrayList<Event> output = new ArrayList<>();
+        if ( n.getLeft() != null ) {
+            output.addAll( getAllEvents(n.getLeft()) );
+        }
+
+        if (n.getRight() != null) {
+            output.addAll( getAllEvents(n.getRight()));
+        }
+
+        output.add(n.getEvent());
+
+        return output;
     }
 
     private class Node {

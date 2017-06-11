@@ -50,18 +50,16 @@ public class Event implements Comparable<Event> {
         this.name = name;
     }
     
-    public String toString() {
-        return name + " on " + month + "/" + date + "/" + year;
+    public String toString() { // DO NOT CHANGE, THIS IS FOR FILE WRITING
+        return name + "," + year + "," + month + "," + date + ',' + duration + ',' + description + ',' + type;
     }
     
     public String toString(boolean b) {
-        return name + ": " + month + "/" + date + "/" + year;
-    }
-    
-    public String writeOutString()
-    {
-        // format: name, year, month, date, duration, descrip
-        return name + "," + year + "," + month + "," + date + ',' + duration + ',' + description + ',' + type;
+        if ( b ) { 
+            return name + ": " + month + "/" + date + "/" + year;
+        } else {
+            return month + "/" + date + "/" + year;
+        }
     }
     
     public int getType(){

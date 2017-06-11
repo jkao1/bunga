@@ -6,7 +6,7 @@ import javax.swing.*;
 
 final Calendar todayCal = Calendar.getInstance(); // keeps track of today
 final int CAL_WIDTH = 1050;
-final int CAL_HEIGHT = 720;
+final int CAL_HEIGHT = 642;
 final int HEADER_HEIGHT = 120;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
@@ -15,6 +15,8 @@ final int gray = 120; // red is rgb(234, 76, 60)
 
 PFont font40, font30, font24, font20, font15, font12, font10;
 String fontName = "Avenir-Light";
+
+String DATA_FILE = "events.dat";
 
 Calendar testCal; // for rolling & adding when drawing the layouts (like a physics test charge xD we use it to do relative stuff)
 ControlP5 cp5;
@@ -31,7 +33,7 @@ String[] daysOfWeekAbbrv = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 String[] daysOfWeekFull = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void setup() {
-  size(1050, 720);
+  size(1050, 762);
   days = new DayCollection();
   cp5 = new ControlP5(this);
   layout = 0; // default is month layout
@@ -73,7 +75,7 @@ void setup() {
      .setPosition(6 * navButtonWidth + 60, 10)
      .setSize(navButtonWidth, navButtonHeight);
      
-  events = new MyBST("data.in");
+  events = new MyBST( loadStrings( DATA_FILE ));
   testCal = Calendar.getInstance();
   Month(0);
 }
@@ -237,7 +239,7 @@ void drawMonth() {
     }
     
     Day day = new Day( currentYear, currentMonth, currentDate, dayNum, currentColor );
-    println(day);
+    println("day @ " + day);
     day.display();
     days.add(day);
     testCal.add( Calendar.DATE, 1 );
@@ -435,4 +437,13 @@ public void Today(int value) {
   if (layout == 3) {
     drawYear();
   }
+}
+
+void exit() {
+  Event[] eventAry = events.getAllEvents();
+  String[] output = new String[ eventAry.length ];
+  for (int i = 0; i < eventAry.length; i++) {
+    output[i] = eventAry[i].toString();
+  }    
+  saveStrings( DATA_FILE, output );
 }

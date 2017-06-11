@@ -19,7 +19,7 @@ class Day {
   }
   
   void display() {
-    Collections.sort( todayEvents );
+    todayEvents = events.findEvents( year, month, date );
     
     this.dayNum = dayNum; // used for position tracking
     this.col = col; // used for text colors
@@ -246,12 +246,8 @@ class Day {
     stroke(0);
     String eventName = JOptionPane.showInputDialog("Event Name:");
     if (eventName != null) {
-      addEvent(new Event(eventName, year, month, date));
+      events.insert( new Event( eventName, year, month, date ));
     }
-  }
-  
-  void addEvent(Event e) {
-    todayEvents.add(e);  
   }
   
   void add(ArrayList<Event> ary) {
