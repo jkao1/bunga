@@ -8,7 +8,6 @@ class EventCollection {
     out.println("hi");
     treeSetEvents = new TreeSet<Event>();
     String[] lines = loadStrings(filename);
-    print(lines.length);
     for (String line : lines) {
       String[] ary = line.split(","); 
       String name;        
@@ -17,7 +16,7 @@ class EventCollection {
       int duration = 60;
       int type = (int) (Math.random() * 4);
       name = ary[0];
-      year = Integer.parseInt(ary[1]) - 1900;
+      year = Integer.parseInt(ary[1]);
       month = Integer.parseInt(ary[2]) - 1;
       date = Integer.parseInt(ary[3]);
       if (ary.length > 4) {

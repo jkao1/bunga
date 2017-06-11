@@ -20,6 +20,11 @@ class DayCollection {
     return days.get(i);
   }
   
+  void clear() {
+    days = new ArrayList<Day>();
+    size = 0;
+  }
+  
   void toMonth() {
     size = 42;
   }

@@ -1,8 +1,3 @@
-import java.util.*;
-import javax.swing.*;
-
-int MONTH_EVENT_HEIGHT = 17;
-
 class Day {
 
   int year, month, date;
@@ -27,8 +22,8 @@ class Day {
     stroke(200);
     if (layout == 0) { // month layout
       xpos = (i % 7) * CAL_WIDTH / 7;
-      ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT - HEADER_HEIGHT) / 6) - 20;
-      rect(xpos, ypos, CAL_WIDTH / 7, (CAL_HEIGHT - HEADER_HEIGHT) / 6) ;
+      ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT) / 6);
+      rect(xpos, ypos, CAL_WIDTH / 7, (CAL_HEIGHT) / 6) ;
       
       int relX = xpos;
       int relY = ypos;
@@ -167,12 +162,7 @@ class Day {
     }
   }
   
-  void removeEventWindow() {
-    
-  }
-  
   void newEventWindow() {
-    println("new event window on Day " + month + "/" + date);
     stroke(0);
     String eventName = JOptionPane.showInputDialog("Event Name:");
     if (eventName != null) {
@@ -182,6 +172,10 @@ class Day {
   
   void addEvent(Event e) {
     todayEvents.add(e);  
+  }
+  
+  boolean hasMouseOnWindow() {
+    return mouseY >= ypos && mouseY <= ypos + CAL_HEIGHT / 6;
   }
   
   boolean hasMouseOnEvent() {
@@ -198,10 +192,10 @@ class Day {
       eventNumber++;
     }    
     Event editMe = todayEvents.get(eventNumber);
-    println("edit event " + editMe + " on Day " + month + "/" + date);
     String newName = JOptionPane.showInputDialog("New Name:");
     if (newName != null) {
       editMe.setName(newName);
+      addEvent(new Event("hi", year, date, month));
     }
   }
   
