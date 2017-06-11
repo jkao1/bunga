@@ -22,13 +22,27 @@ class Day {
     stroke(200);
     if (layout == 0) { // month layout
       xpos = (i % 7) * CAL_WIDTH / 7;
-      ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT) / 6);
+      ypos = HEADER_HEIGHT + ((i / 7) * (CAL_HEIGHT - HEADER_HEIGHT)) / 6;
+      Calendar cal = new GregorianCalendar(year, month, date);
+      if(cal.get(Calendar.DAY_OF_WEEK) - 1 == 0 || cal.get(Calendar.DAY_OF_WEEK) - 1 == 6){
+        fill(247);
+      }
+      stroke(226);
       rect(xpos, ypos, CAL_WIDTH / 7, (CAL_HEIGHT) / 6) ;
       
       int relX = xpos;
       int relY = ypos;
-      textFont(font24, 24);
+      textFont(font24, 22);
       fill(col);
+      //how to get todays day?? red dot
+      /*
+      if(cal.get(Calendar.MONTH) == month && cal.get(Calendar.DATE) == date){
+        fill(255, 0, 0);
+        ellipse(relX + 12, relY - 10, 40, 40);
+        fill(255);
+        text(cal.get(Calendar.DATE), relX, relY);
+      }else 
+      */
       if (date < 10) {
         text(Integer.toString(date), // draw numbers on each day
              xpos + CAL_WIDTH / 7 - 20,
@@ -118,46 +132,61 @@ class Day {
       rect(xpos, (currentHour * yChange) + HEADER_HEIGHT + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
       
     } else { // day layout
-      textFont(font24, 24);
-      ypos = HEADER_HEIGHT;
-      xpos = 0;
-      int sideMonth = 350;
-      int yChange = (CAL_HEIGHT - HEADER_HEIGHT) / 25;
-      stroke(0);
-      rect(xpos + sideMonth, ypos - yChange, CAL_WIDTH - sideMonth - 10 , yChange);
-      fill(0);
-      text("All Day", xpos + sideMonth, ypos );
-      fill(255);
+      textFont(font24, 15);
+      ypos = navButtonHeight + 55;
+      int sideMonth = 300;
+      xpos = sideMonth;
+      int yChange = (CAL_HEIGHT - ypos) / 25;
+      int xChange = CAL_WIDTH - sideMonth - 40;
+
       String noon = " AM";
       for(int n = 0; n <= 1; n++){
         if(n == 0){
-          rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10, yChange);
           fill(0);
-          text("12 AM", xpos + sideMonth, ypos);
+          text("12 AM", xpos, ypos + yChange);
           fill(255);
           ypos += yChange;
         }else if(n == 1){
-          rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10, yChange);
           fill(0);
-          text("12 PM", xpos + sideMonth, ypos);
+          text(" 12 PM", xpos, ypos + yChange);
           fill(255);
           ypos += yChange;
           noon = " PM";
         } 
         for(int t = 1; t < 12; t++){
-          rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10, yChange);
+          //rect(xpos + sideMonth, ypos, CAL_WIDTH - sideMonth - 10, yChange);
           fill(0);
-          text(t + noon, xpos + sideMonth, ypos);
+          if(t < 10){
+            text("   " + t + noon, xpos, ypos + yChange);
+          }else{
+            text(" " + t + noon, xpos, ypos + yChange);
+          }
           fill(255);
           ypos += yChange;
         }
       }
+      
+      ypos = navButtonHeight + 50;
+      stroke(226);
+      fill(255);
+      rect(xpos + 50, ypos - yChange, xChange, 2 * yChange);
+      fill(0);
+      text("all-day", xpos, ypos );
+      ypos += yChange;
+      fill(247);
+      for(int t = 0; t < 24; t++){
+        rect(xpos + 50, ypos, xChange, yChange);
+        ypos += yChange;
+      }
+      fill(188);
+      rect(xpos + 45, navButtonHeight + 45 + yChange, xChange + 50, 5);
+      
       Date d = new Date();
       DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
       int currentHour = Integer.parseInt(dateFormat.format(d).substring(11, 13));
       int currentMin = Integer.parseInt(dateFormat.format(d).substring(14, 16));
-      fill(255, 0, 0);
-      rect(xpos + sideMonth, ((1 + currentHour) * yChange) + HEADER_HEIGHT + ((currentMin / 60.) * yChange), CAL_WIDTH, 2);
+      fill(181, 63, 63);
+      rect(xpos + 50, ((1 + currentHour) * yChange) + navButtonHeight + 55 + ((currentMin / 60.) * yChange), xChange, 3);
       
     }
   }

@@ -5,7 +5,7 @@ import java.io.*;
 import javax.swing.*;
 
 final int CAL_WIDTH = 1050;
-final int CAL_HEIGHT = 600;
+final int CAL_HEIGHT = 720;
 final int HEADER_HEIGHT = 120;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
@@ -106,8 +106,7 @@ void drawDay(int y, int m, int d){
   Calendar cal = new GregorianCalendar();
   fill(0);
   PFont font = loadFont("ArialHebrew-120.vlw");
-  textFont(font, 10);
-  text("S        M        T        W        T        F        S", 0, HEADER_HEIGHT);
+  
   //finding right dates
   cal.set(y, m, 1);
   int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
@@ -123,10 +122,18 @@ void drawDay(int y, int m, int d){
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
   
-  int dayX = 0;
+  int dayX = 50;
   int dayY = HEADER_HEIGHT + 20;
   boolean switched = false;
   int col = gray;
+  textFont( font12, 12 );
+  fill( gray );
+  for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+    text( daysOfWeekLetter[ dayOfWeek ], dayX + (dayOfWeek * 30), dayY );
+  }
+  dayY += 30;
+  dayX = 50;
+  //f
   for(int t = 0; t < 42; t++){
     if ( cal.get(Calendar.DATE) == 1 ) {
       if (switched) {
@@ -136,11 +143,18 @@ void drawDay(int y, int m, int d){
         switched = true;
       }
     }
-    fill(col);
-    text(cal.get(Calendar.DATE), dayX, dayY);
+    if(cal.get(Calendar.MONTH) == startMonth && cal.get(Calendar.DATE) == startDay){
+      fill(255, 0, 0);
+      ellipse(dayX + 6, dayY - 5, 20, 20);
+      fill(255);
+      text(cal.get(Calendar.DATE), dayX, dayY);
+    }else{
+      fill(col);
+      text(cal.get(Calendar.DATE), dayX, dayY);
+    }
     dayX += 30;
     if(t % 7 == 6){
-      dayX = 0;
+      dayX = 50;
       dayY += 20;
     }
     cal.add(Calendar.DATE, 1);  
@@ -178,7 +192,7 @@ void drawYear(){ // just removed parameters and have not ajdusted
   int ypos = HEADER_HEIGHT;
   
   int monthWidth = (CAL_WIDTH - 40) / 4;
-  int monthHeight = CAL_HEIGHT / 3;  
+  int monthHeight = (CAL_HEIGHT - HEADER_HEIGHT) / 3;  
   
   Calendar trackerCal = Calendar.getInstance();
   while (trackerCal.get(Calendar.MONTH) > 0) {
