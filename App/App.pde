@@ -63,9 +63,13 @@ void setup() {
      .setValue(03)
      .setPosition(4 * navButtonWidth + 40, 10)
      .setSize(navButtonWidth, navButtonHeight);
-   cp5.addButton("Next")
+   cp5.addButton("Today")
      .setValue(03)
      .setPosition(5 * navButtonWidth + 50, 10)
+     .setSize(navButtonWidth, navButtonHeight);
+   cp5.addButton("Next")
+     .setValue(03)
+     .setPosition(6 * navButtonWidth + 60, 10)
      .setSize(navButtonWidth, navButtonHeight);
    events = new EventCollection("data.in");
   testCal = Calendar.getInstance();
@@ -405,6 +409,20 @@ public void Next(int value) {
   }
   if (layout == 3) {
     testCal.add( Calendar.YEAR, 1 );
+    drawYear();
+  }
+}
+
+public void Today(int value) {
+  testCal = Calendar.getInstance();
+  if (layout == 0) {
+    drawMonth();
+  }
+  if (layout == 1) { // week
+  }
+  if (layout == 2) { // day
+  }
+  if (layout == 3) {
     drawYear();
   }
 }
