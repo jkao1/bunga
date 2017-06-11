@@ -4,8 +4,9 @@ import java.text.*;
 import java.io.*;
 import javax.swing.*;
 
+final Calendar todayCal = Calendar.getInstance(); // keeps track of today
 final int CAL_WIDTH = 1050;
-final int CAL_HEIGHT = 600;
+final int CAL_HEIGHT = 720;
 final int HEADER_HEIGHT = 120;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
@@ -15,7 +16,7 @@ final int gray = 120; // red is rgb(234, 76, 60)
 PFont font40, font30, font24, font20, font15, font12, font10;
 String fontName = "Avenir-Light";
 
-Calendar testCal; // for rolling & adding when drawing the layouts (like a test charge xd we use it to do relative stuff)
+Calendar testCal; // for rolling & adding when drawing the layouts (like a physics test charge xD we use it to do relative stuff)
 ControlP5 cp5;
 Date now;
 EventCollection events;
@@ -71,6 +72,7 @@ void setup() {
      .setValue(03)
      .setPosition(6 * navButtonWidth + 60, 10)
      .setSize(navButtonWidth, navButtonHeight);
+     
   events = new EventCollection("data.in");
   testCal = Calendar.getInstance();
   Month(0);
@@ -121,17 +123,20 @@ void drawHeader() {
   fill(255);
 }
 
-void drawDay(int y, int m, int d){
+void drawDay() {
+  layout = 2;
+  int originalYear = testCal.get( Calendar.YEAR );
+  int originalMonth = testCal.get( Calendar.MONTH );
+  int originalDate = testCal.get( Calendar.DATE );
   background(255);
   drawHeader();
   fill(255);
   Calendar cal = new GregorianCalendar();
   fill(0);
   PFont font = loadFont("ArialHebrew-120.vlw");
-  textFont(font, 10);
-  text("S        M        T        W        T        F        S", 0, HEADER_HEIGHT);
+  
   //finding right dates
-  cal.set(y, m, 1);
+  cal.set(originalYear, originalMonth, 1);
   int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
   if(dYear < 0){
     cal.add(Calendar.DATE, 7 + dYear);
@@ -145,10 +150,29 @@ void drawDay(int y, int m, int d){
   startMonth = startDate.getMonth();
   startDay = startDate.getDate();
   
-  int dayX = 0;
+  //
+  //BUG : getEventsInDay doesn't work?
+  //
+  int eventTracker = 0;
+  Event[] theseEvents = events.getEventsInDay( originalYear, originalMonth, originalDate);
+  Day day = new Day( originalYear, originalMonth, originalDate );
+  while (eventTracker < theseEvents.length && theseEvents[eventTracker].onDay( originalYear, originalMonth, originalDate )) { // add all events on day to day
+    day.addEvent( theseEvents[eventTracker] );
+    eventTracker++;
+  }
+  
+  int dayX = 50;
   int dayY = HEADER_HEIGHT + 20;
   boolean switched = false;
   int col = gray;
+  textFont( font12, 12 );
+  fill( gray );
+  for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+    text( daysOfWeekLetter[ dayOfWeek ], dayX + (dayOfWeek * 30), dayY );
+  }
+  dayY += 30;
+  dayX = 50;
+  //f
   for(int t = 0; t < 42; t++){
     if ( cal.get(Calendar.DATE) == 1 ) {
       if (switched) {
@@ -158,25 +182,32 @@ void drawDay(int y, int m, int d){
         switched = true;
       }
     }
-    fill(col);
-    text(cal.get(Calendar.DATE), dayX, dayY);
+    if(cal.get(Calendar.MONTH) == originalMonth && cal.get(Calendar.DATE) == originalDate){
+      fill(255, 0, 0);
+      ellipse(dayX + 6, dayY - 5, 20, 20);
+      fill(255);
+      text(cal.get(Calendar.DATE), dayX, dayY);
+    }else{
+      fill(col);
+      text(cal.get(Calendar.DATE), dayX, dayY);
+    }
     dayX += 30;
     if(t % 7 == 6){
-      dayX = 0;
+      dayX = 50;
       dayY += 20;
     }
     cal.add(Calendar.DATE, 1);  
   }
   //rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
   fill(255);
-  Day day = new Day(y, m, d);
-  Event[] e = events.getEventsInDay(y, m, d);
-  day.display(d, 255); //change col
+  day.display(); //change col
 } 
 
 void drawDaysInWeek(int y, int m, int d){
+  layout = 1;
   background(255);
   drawHeader();
+  int eventTracker = 0;
   Event[] e = events.getEventsInWeek(y, m, d);
   SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
   Calendar tempCal = Calendar.getInstance();
@@ -186,13 +217,68 @@ void drawDaysInWeek(int y, int m, int d){
     int monthNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(0, 2));
     int yearNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(6));
     Day day = new Day(yearNum, monthNum, dayNum);
-    day.display(dayNum, 255);
+    day.display();
     tempCal.roll(Calendar.DAY_OF_WEEK, 1);
   }
 }
 
-void drawYear() {
+void drawMonth() {
+  layout = 0;
+  int originalYear = testCal.get( Calendar.YEAR );
+  int originalMonth = testCal.get( Calendar.MONTH );
+  int originalDate = testCal.get( Calendar.DATE );
+    
+  // set to previous month's Sunday
+  testCal.add( Calendar.DATE, -testCal.get( Calendar.DATE ));
+  testCal.add( Calendar.DATE, 1 - testCal.get( Calendar.DAY_OF_WEEK ));
   
+  int currentYear, currentMonth, currentDate;
+  background(255);
+  drawHeader();
+  layout = 0;
+  Event[] theseEvents = events.getEventsInMonth( testCal.get( Calendar.YEAR ), testCal.get( Calendar.MONTH ) );
+  
+  boolean onFocusMonth = false;  
+  int currentColor = gray;  
+  int dayNum = 0;
+  int eventTracker = 0;
+  
+  while ( dayNum < 42) {
+    currentYear = testCal.get( Calendar.YEAR );
+    currentMonth = testCal.get( Calendar.MONTH );
+    currentDate = testCal.get( Calendar.DATE );
+    
+    if ( currentDate == 1 ) { // if at the beginning of the month
+      if ( onFocusMonth ) {
+        currentColor = gray; // out of focus month, so change back to gray
+      } else {
+        currentColor = 0; // in focus month now, so change to black
+        onFocusMonth = true;
+      }
+    }
+    
+    Day day = new Day( currentYear, currentMonth, currentDate, dayNum, currentColor );
+    // add all events on day to day
+    while (eventTracker < theseEvents.length && theseEvents[eventTracker].onDay( currentYear, currentMonth, currentDate )) {
+      day.addEvent( theseEvents[eventTracker] );
+      eventTracker++;
+    }
+    
+    day.display();
+    days.add(day);
+    testCal.add( Calendar.DATE, 1 );
+    dayNum++;
+  }
+  currentYear = testCal.get( Calendar.YEAR );
+  currentMonth = testCal.get( Calendar.MONTH );
+  currentDate = testCal.get( Calendar.DATE );
+  testCal.add( Calendar.YEAR, originalYear - currentYear ); 
+  testCal.add( Calendar.MONTH, originalMonth - currentMonth ); 
+  testCal.add( Calendar.DATE, originalDate - currentDate ); 
+}
+
+void drawYear() {
+  layout = 3;
   int originalYear = testCal.get( Calendar.YEAR );
   int originalMonth = testCal.get( Calendar.MONTH );
   int originalDate = testCal.get( Calendar.DATE );
@@ -204,7 +290,7 @@ void drawYear() {
   int ypos = HEADER_HEIGHT;
   
   int monthWidth = (CAL_WIDTH - 40) / 4;
-  int monthHeight = CAL_HEIGHT / 3;  
+  int monthHeight = (CAL_HEIGHT - HEADER_HEIGHT) / 3;  
   
   Calendar trackerCal = testCal;
   while (trackerCal.get(Calendar.MONTH) > 0) {
@@ -286,13 +372,17 @@ void draw() {
 void mousePressed() {
   if (mouseY > HEADER_HEIGHT) {
     if (layout == 0) {
-      Day editMe = findDay();    
-      if (editMe.hasMouseOnEvent()) {
+      Day editMe = findDay();   
+      println("mouse pressed on day " + editMe);
+      int mouseOnEventStatus = editMe.hasMouseOnEvent();
+      if (mouseOnEventStatus == 1) {
         editMe.editEvent();
+      } else if (mouseOnEventStatus == 2) {
+        drawDay();
       } else if (editMe.hasMouseOnWindow()) {
         editMe.newEventWindow();
       }
-      editMe.display(editMe.i, editMe.col);
+      editMe.display();
     }  
   }
 }
@@ -309,73 +399,19 @@ Day findDay() {
   return days.get( days.size() - (42 - dayNum ));
 }
 
-void drawMonth() {
-  int originalYear = testCal.get( Calendar.YEAR );
-  int originalMonth = testCal.get( Calendar.MONTH );
-  int originalDate = testCal.get( Calendar.DATE );
-    
-  // set to previous month's Sunday
-  testCal.add( Calendar.DATE, -testCal.get( Calendar.DATE ));
-  testCal.add( Calendar.DATE, 1 - testCal.get( Calendar.DAY_OF_WEEK ));
-  
-  int currentYear, currentMonth, currentDate;
-  background(255);
-  drawHeader();
-  layout = 0;
-  Event[] theseEvents = events.getEventsInMonth( testCal.get( Calendar.YEAR ), testCal.get( Calendar.MONTH ) );
-  
-  boolean onFocusMonth = false;  
-  int currentColor = gray;  
-  int dayNum = 0;
-  int eventTracker = 0;
-  
-  while ( dayNum < 42) {
-    currentYear = testCal.get( Calendar.YEAR );
-    currentMonth = testCal.get( Calendar.MONTH );
-    currentDate = testCal.get( Calendar.DATE );
-    Day day = new Day( currentYear, currentMonth, currentDate );
-    while (eventTracker < theseEvents.length && theseEvents[eventTracker].onDay( currentYear, currentMonth, currentDate )) { // add all events on day to day
-      day.addEvent( theseEvents[eventTracker] );
-      eventTracker++;
-    }
-    if ( currentDate == 1 ) { // the beginning of the month
-      if ( onFocusMonth ) {
-        currentColor = gray; // out of focus month, so change back to gray
-      } else {
-        currentColor = 0; // in focus month now, so change to black
-        onFocusMonth = true;
-      }
-    }
-    day.display( dayNum, currentColor );
-    days.add(day);
-    testCal.add( Calendar.DATE, 1 );
-    dayNum++;
-  }
-  currentYear = testCal.get( Calendar.YEAR );
-  currentMonth = testCal.get( Calendar.MONTH );
-  currentDate = testCal.get( Calendar.DATE );
-  testCal.add( Calendar.YEAR, originalYear - currentYear ); 
-  testCal.add( Calendar.MONTH, originalMonth - currentMonth ); 
-  testCal.add( Calendar.DATE, originalDate - currentDate ); 
-}
-
 public void Day(int value) {
-  layout = 2;
-  drawDay(startYear, startMonth, startDay);
+  drawDay();
 }
 
 public void Week(int value) {
-  layout = 1;
   drawDaysInWeek(startYear, startMonth, startDay);
 }
 
 public void Month(int value) {
-  layout = 0;
   drawMonth();
 }
 
 public void Year(int value) {
-  layout = 3;
   drawYear();
 }
 
@@ -385,8 +421,10 @@ public void Previous(int value) {
     drawMonth();
   }
   if (layout == 1) { // week
+    testCal.add( Calendar.DATE, -7 );
   }
   if (layout == 2) { // day
+    testCal.add( Calendar.DATE, -1 );
   }
   if (layout == 3) {
     testCal.add( Calendar.YEAR, -1 );
@@ -400,8 +438,10 @@ public void Next(int value) {
     drawMonth();
   }
   if (layout == 1) { // week
+    testCal.add( Calendar.DATE, 7 );
   }
   if (layout == 2) { // day
+    testCal.add( Calendar.DATE, 1 );
   }
   if (layout == 3) {
     testCal.add( Calendar.YEAR, 1 );
