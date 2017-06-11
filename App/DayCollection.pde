@@ -25,15 +25,7 @@ class DayCollection {
     size = 0;
   }
   
-  void toMonth() {
-    size = 42;
-  }
-  
-  void toWeek() {
-    size = 7;
-  }
-  
-  void toDay() {
-    size = 1;
+  int size() {
+    return days.size();
   }
 }
