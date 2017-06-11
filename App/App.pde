@@ -71,7 +71,7 @@ void setup() {
      .setValue(03)
      .setPosition(6 * navButtonWidth + 60, 10)
      .setSize(navButtonWidth, navButtonHeight);
-   events = new EventCollection("data.in");
+  events = new EventCollection("data.in");
   testCal = Calendar.getInstance();
   Month(0);
 }
@@ -275,8 +275,8 @@ void drawYear() {
   testCal.add( Calendar.DATE, originalDate - currentDate ); 
 }
 
-void printCal(Calendar c) {
-  println(c.get(Calendar.DAY_OF_WEEK)+", " + c.get(Calendar.MONTH)+"/"+c.get(Calendar.DATE)+"/"+c.get(Calendar.YEAR));
+void printCal() {
+  println(testCal.get(Calendar.DAY_OF_WEEK)+", " + testCal.get(Calendar.MONTH)+"/"+testCal.get(Calendar.DATE)+"/"+testCal.get(Calendar.YEAR));
 }
 
 void draw() {
@@ -313,15 +313,11 @@ void drawMonth() {
   int originalYear = testCal.get( Calendar.YEAR );
   int originalMonth = testCal.get( Calendar.MONTH );
   int originalDate = testCal.get( Calendar.DATE );
-  int focusMonth = testCal.get( Calendar.MONTH );
-  // set start month to the month before
-  while ( testCal.get( Calendar.MONTH ) == focusMonth ) {
-    testCal.add( Calendar.DATE, -1 );
-  }
-  // set start day to a Sunday
-  while (  testCal.get( Calendar.DAY_OF_WEEK ) != 1 ) {
-    testCal.add( Calendar.DATE, -1 );
-  }
+    
+  // set to previous month's Sunday
+  testCal.add( Calendar.DATE, -testCal.get( Calendar.DATE ));
+  testCal.add( Calendar.DATE, 1 - testCal.get( Calendar.DAY_OF_WEEK ));
+  
   int currentYear, currentMonth, currentDate;
   background(255);
   drawHeader();

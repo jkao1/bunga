@@ -30,11 +30,11 @@ class Day {
       textFont(font24, 24);
       fill(col);
       if (date < 10) {
-        text(Integer.toString(date), // draw numbers on each day
+        text(Integer.toString(date), // draw one digit numbers on each day
              xpos + CAL_WIDTH / 7 - 20,
              ypos + 30);
       } else {
-        text(Integer.toString(date), // draw numbers on each day
+        text(Integer.toString(date), // draw two digit numbers on each day
              xpos + CAL_WIDTH / 7 - 32,
              ypos + 30);
       }
