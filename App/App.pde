@@ -11,7 +11,6 @@ final int navButtonWidth = 80;
 final int navButtonHeight = 20;
 final int MONTH_EVENT_HEIGHT = 17;
 final int gray = 120; // red is rgb(234, 76, 60)
-final int darkGray = 80;
 
 PFont font24, font20, font15, font12, font10;
 String fontName = "Avenir-Light";
@@ -207,7 +206,7 @@ void drawYear(){ // just removed parameters and have not ajdusted
     // begin drawing numbers
     relY += 20;
     textFont( font12, 12 );
-    fill( darkGray );
+    fill( gray );
     for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
       text( daysOfWeekLetter[ dayOfWeek ], relX + dayOfWeek * 30, relY );
     }
