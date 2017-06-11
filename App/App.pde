@@ -10,9 +10,11 @@ final int HEADER_HEIGHT = 120;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
 final int MONTH_EVENT_HEIGHT = 17;
+final int gray = 120; // red is rgb(234, 76, 60)
+final int darkGray = 80;
 
-PFont font24;
-PFont font12;
+PFont font24, font20, font15, font12, font10;
+String fontName = "Avenir-Light";
 
 Calendar testCal; // for rolling & adding when drawing the layouts (like a test charge xd we use it to do relative stuff)
 ControlP5 cp5;
@@ -24,6 +26,7 @@ int layout;
 int startYear, startMonth, startDay;
 
 String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+String[] daysOfWeekLetter = {"S", "M", "T", "W", "T", "F", "S"};
 String[] daysOfWeek = {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
 String[] daysOfWeekFull = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -33,8 +36,11 @@ void setup() {
   cp5 = new ControlP5(this);
   layout = 0; // default is month layout
   
-  font24 = loadFont("ArialHebrew-24.vlw");
-  font12 = loadFont("ArialHebrew-12.vlw");
+  font24 = loadFont(fontName + "-24.vlw");
+  font20 = loadFont(fontName + "-20.vlw");
+  font15 = loadFont(fontName + "-15.vlw");
+  font12 = loadFont(fontName + "-12.vlw");
+  font10 = loadFont(fontName + "-10.vlw");
   
   // create a new button with name 'buttonA'
   cp5.addButton("Day")
@@ -97,11 +103,53 @@ void drawHeader(int layout){
 void drawDay(int y, int m, int d){
   background(255);
   drawHeader(2);
-  fill(100);
-  rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
+  fill(255);
+  Calendar cal = new GregorianCalendar();
+  fill(0);
+  PFont font = loadFont("ArialHebrew-120.vlw");
+  textFont(font, 10);
+  text("S        M        T        W        T        F        S", 0, HEADER_HEIGHT);
+  //finding right dates
+  cal.set(y, m, 1);
+  int dYear = (Calendar.SUNDAY-cal.get(Calendar.DAY_OF_WEEK));            
+  if(dYear < 0){
+    cal.add(Calendar.DATE, 7 + dYear);
+  }else{
+    cal.add(Calendar.DATE, dYear);
+  }
+  // calendar is now at first Sunday of the month
+  cal.add(Calendar.DAY_OF_MONTH, - 7);
+  Date startDate = cal.getTime();
+  startYear = startDate.getYear();
+  startMonth = startDate.getMonth();
+  startDay = startDate.getDate();
+  
+  int dayX = 0;
+  int dayY = HEADER_HEIGHT + 20;
+  boolean switched = false;
+  int col = gray;
+  for(int t = 0; t < 42; t++){
+    if ( cal.get(Calendar.DATE) == 1 ) {
+      if (switched) {
+        col = gray;
+      } else {
+        col = 0;
+        switched = true;
+      }
+    }
+    fill(col);
+    text(cal.get(Calendar.DATE), dayX, dayY);
+    dayX += 30;
+    if(t % 7 == 6){
+      dayX = 0;
+      dayY += 20;
+    }
+    cal.add(Calendar.DATE, 1);  
+  }
+  //rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
+  fill(255);
   Day day = new Day(y, m, d);
   Event[] e = events.getEventsInDay(y, m, d);
-  fill(255);
   day.display(d, 255); //change col
 } 
 
@@ -128,69 +176,72 @@ void drawYear(){ // just removed parameters and have not ajdusted
   drawHeader(3);
   
   int xpos = 40;
-  int ypos = 120;
+  int ypos = HEADER_HEIGHT;
+  
   int monthWidth = (CAL_WIDTH - 40) / 4;
-  int monthHeight = CAL_HEIGHT / 3;
-  boolean switched = false;
-  int col = 150;
-  PFont font = loadFont("ArialHebrew-120.vlw");
-  Calendar trackerCal = new GregorianCalendar();
+  int monthHeight = CAL_HEIGHT / 3;  
+  
+  Calendar trackerCal = Calendar.getInstance();
+  while (trackerCal.get(Calendar.MONTH) > 0) {
+    trackerCal.add( Calendar.MONTH, -1 );
+  }
+  while (trackerCal.get(Calendar.DATE) > 1) {
+    trackerCal.add( Calendar.DATE, -1 );
+  }
   stroke(255);
+  
   int trackerY, trackerM, trackerD;
-  for(int i = 0; i < 12; i++){
-    rect(xpos, ypos, monthWidth, monthHeight);
-    fill(0);
-    textFont(font, 20);
-    text(months[i], xpos, ypos);
-    textFont(font, 10);
-    text("S        M        T        W        T        F        S", xpos, ypos + 20);
+  
+  for(int monthNum = 0; monthNum < 12; monthNum++) {
     
-    //finding right dates
-    trackerCal.set(y, i, 1);
-    int dYear = (Calendar.SUNDAY-trackerCal.get(Calendar.DAY_OF_WEEK));            
-    if(dYear < 0){
-      trackerCal.add(Calendar.DATE, 7 + dYear);
-    }else{
-      trackerCal.add(Calendar.DATE, dYear);
+    boolean colorSwitched = false;
+    int currentColor = gray;
+    
+    int relX = xpos + (monthNum % 4) * monthWidth;
+    int relY = ypos + (monthNum / 4) * monthHeight;
+
+    fill( 234, 76, 60 );
+    textFont( font20, 20 );
+    text( months[ monthNum ], relX, relY ); // write month name
+    
+    // begin drawing numbers
+    relY += 20;
+    textFont( font12, 12 );
+    fill( darkGray );
+    for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+      text( daysOfWeekLetter[ dayOfWeek ], relX + dayOfWeek * 30, relY );
     }
-    // calendar is now at first Sunday of the month
-    trackerCal.add(Calendar.DAY_OF_MONTH, - 7);
-    Date trackerDate = trackerCal.getTime();
-    trackerY = trackerDate.getYear();
-    trackerM = trackerDate.getMonth();
-    trackerD = trackerDate.getDate();    
     
-    //drawing dates
-    textFont(font, 15);
-    int dayX = xpos;
-    int dayY = ypos + 40;
-    for(int t = 0; t < 42; t++){
+    // setting calendar to the first Sunday of the month
+    while ( trackerCal.get( Calendar.MONTH ) == monthNum ) {
+      trackerCal.add( Calendar.DATE, -1 );
+    }
+    while ( trackerCal.get( Calendar.DAY_OF_WEEK ) != 1 ) {
+      trackerCal.add( Calendar.DATE, -1 );
+    }
+    
+    trackerY = trackerCal.get( Calendar.YEAR );
+    trackerM = trackerCal.get( Calendar.MONTH );
+    trackerD = trackerCal.get( Calendar.DATE );
+    
+    // drawing dates    
+    fill( 0 );
+    relY += 20;
+    for(int dayNum = 0; dayNum < 42; dayNum++){
       if ( trackerCal.get(Calendar.DATE) == 1 ) {
-        if (switched) {
-          col = 150;
+        if ( colorSwitched ) {
+          currentColor = gray;
         } else {
-          col = 0;
-          switched = true;
+          currentColor = 0;
+          colorSwitched = true;
         }
       }
-      fill(col);
-      text(trackerCal.get(Calendar.DATE), dayX, dayY);
-      dayX += 30;
-      if(t % 7 == 6){
-        dayX = xpos;
-        dayY += 20;
-      }
+      fill(currentColor);
+      text( trackerCal.get(Calendar.DATE), relX + (dayNum % 7) * 30, relY + (dayNum / 7) * 20 );
       trackerCal.add(Calendar.DATE, 1);
-    }  
-    switched = false;
+    }    
     fill(255);
-    xpos += monthWidth;
-    if(i % 4 == 3){
-      xpos = 40;
-      ypos += monthHeight;
-    }
   }
-  printCal(testCal);
 }
 
 void printCal(Calendar c) {
@@ -243,7 +294,6 @@ Day findDay() {
 }
 
 void drawDaysInMonth() {
-  printCal(testCal);
   int currentYear, currentMonth, currentDate;
   background(255);
   drawHeader(0);
@@ -252,7 +302,7 @@ void drawDaysInMonth() {
   Event[] theseEvents = events.getEventsInMonth( testCal.get( Calendar.YEAR ), testCal.get( Calendar.MONTH ) );
   
   boolean onFocusMonth = false;  
-  int currentColor = 150;  
+  int currentColor = gray;  
   int dayNum = 0;
   int eventTracker = 0;
   
@@ -267,7 +317,7 @@ void drawDaysInMonth() {
     }
     if ( currentDate == 1 ) { // the beginning of the month
       if ( onFocusMonth ) {
-        currentColor = 150; // out of focus month, so change back to gray
+        currentColor = gray; // out of focus month, so change back to gray
       } else {
         currentColor = 0; // in focus month now, so change to black
         onFocusMonth = true;
@@ -305,136 +355,3 @@ public void controlEvent(ControlEvent theEvent) {
 void stop() {
   events.close();
 }
-
-
-/*
-a list of all methods available for the Button Controller
-use ControlP5.printPublicMethodsFor(Button.class);
-to print the following list into the console.
-
-You can find further details about class Button in the javadoc.
-
-Format:
-ClassName : returnType methodName(parameter type)
-
-
-controlP5.Button : Button activateBy(int) 
-controlP5.Button : Button setOff() 
-controlP5.Button : Button setOn() 
-controlP5.Button : Button setSwitch(boolean) 
-controlP5.Button : Button setValue(float) 
-controlP5.Button : Button update() 
-controlP5.Button : String getInfo() 
-controlP5.Button : String toString() 
-controlP5.Button : boolean getBooleanValue() 
-controlP5.Button : boolean isOn() 
-controlP5.Button : boolean isPressed() 
-controlP5.Controller : Button addCallback(CallbackListener) 
-controlP5.Controller : Button addListener(ControlListener) 
-controlP5.Controller : Button bringToFront() 
-controlP5.Controller : Button bringToFront(ControllerInterface) 
-controlP5.Controller : Button hide() 
-controlP5.Controller : Button linebreak() 
-controlP5.Controller : Button listen(boolean) 
-controlP5.Controller : Button lock() 
-controlP5.Controller : Button plugTo(Object) 
-controlP5.Controller : Button plugTo(Object, String) 
-controlP5.Controller : Button plugTo(Object[]) 
-controlP5.Controller : Button plugTo(Object[], String) 
-controlP5.Controller : Button registerProperty(String) 
-controlP5.Controller : Button registerProperty(String, String) 
-controlP5.Controller : Button registerTooltip(String) 
-controlP5.Controller : Button removeBehavior() 
-controlP5.Controller : Button removeCallback() 
-controlP5.Controller : Button removeCallback(CallbackListener) 
-controlP5.Controller : Button removeListener(ControlListener) 
-controlP5.Controller : Button removeProperty(String) 
-controlP5.Controller : Button removeProperty(String, String) 
-controlP5.Controller : Button setArrayValue(float[]) 
-controlP5.Controller : Button setArrayValue(int, float) 
-controlP5.Controller : Button setBehavior(ControlBehavior) 
-controlP5.Controller : Button setBroadcast(boolean) 
-controlP5.Controller : Button setCaptionLabel(String) 
-controlP5.Controller : Button setColor(CColor) 
-controlP5.Controller : Button setColorActive(int) 
-controlP5.Controller : Button setColorBackground(int) 
-controlP5.Controller : Button setColorCaptionLabel(int) 
-controlP5.Controller : Button setColorForeground(int) 
-controlP5.Controller : Button setColorValueLabel(int) 
-controlP5.Controller : Button setDecimalPrecision(int) 
-controlP5.Controller : Button setDefaultValue(float) 
-controlP5.Controller : Button setHeight(int) 
-controlP5.Controller : Button setId(int) 
-controlP5.Controller : Button setImages(PImage, PImage, PImage) 
-controlP5.Controller : Button setImages(PImage, PImage, PImage, PImage) 
-controlP5.Controller : Button setLabelVisible(boolean) 
-controlP5.Controller : Button setLock(boolean) 
-controlP5.Controller : Button setMax(float) 
-controlP5.Controller : Button setMin(float) 
-controlP5.Controller : Button setMouseOver(boolean) 
-controlP5.Controller : Button setMoveable(boolean) 
-controlP5.Controller : Button setPosition(PVector) 
-controlP5.Controller : Button setPosition(float, float) 
-controlP5.Controller : Button setSize(PImage) 
-controlP5.Controller : Button setSize(int, int) 
-controlP5.Controller : Button setStringValue(String) 
-controlP5.Controller : Button setUpdate(boolean) 
-controlP5.Controller : Button setValueLabel(String) 
-controlP5.Controller : Button setView(ControllerView) 
-controlP5.Controller : Button setVisible(boolean) 
-controlP5.Controller : Button setWidth(int) 
-controlP5.Controller : Button show() 
-controlP5.Controller : Button unlock() 
-controlP5.Controller : Button unplugFrom(Object) 
-controlP5.Controller : Button unplugFrom(Object[]) 
-controlP5.Controller : Button unregisterTooltip() 
-controlP5.Controller : Button update() 
-controlP5.Controller : Button updateSize() 
-controlP5.Controller : CColor getColor() 
-controlP5.Controller : ControlBehavior getBehavior() 
-controlP5.Controller : ControlWindow getControlWindow() 
-controlP5.Controller : ControlWindow getWindow() 
-controlP5.Controller : ControllerProperty getProperty(String) 
-controlP5.Controller : ControllerProperty getProperty(String, String) 
-controlP5.Controller : Label getCaptionLabel() 
-controlP5.Controller : Label getValueLabel() 
-controlP5.Controller : List getControllerPlugList() 
-controlP5.Controller : PImage setImage(PImage) 
-controlP5.Controller : PImage setImage(PImage, int) 
-controlP5.Controller : PVector getAbsolutePosition() 
-controlP5.Controller : PVector getPosition() 
-controlP5.Controller : String getAddress() 
-controlP5.Controller : String getInfo() 
-controlP5.Controller : String getName() 
-controlP5.Controller : String getStringValue() 
-controlP5.Controller : String toString() 
-controlP5.Controller : Tab getTab() 
-controlP5.Controller : boolean isActive() 
-controlP5.Controller : boolean isBroadcast() 
-controlP5.Controller : boolean isInside() 
-controlP5.Controller : boolean isLabelVisible() 
-controlP5.Controller : boolean isListening() 
-controlP5.Controller : boolean isLock() 
-controlP5.Controller : boolean isMouseOver() 
-controlP5.Controller : boolean isMousePressed() 
-controlP5.Controller : boolean isMoveable() 
-controlP5.Controller : boolean isUpdate() 
-controlP5.Controller : boolean isVisible() 
-controlP5.Controller : float getArrayValue(int) 
-controlP5.Controller : float getDefaultValue() 
-controlP5.Controller : float getMax() 
-controlP5.Controller : float getMin() 
-controlP5.Controller : float getValue() 
-controlP5.Controller : float[] getArrayValue() 
-controlP5.Controller : int getDecimalPrecision() 
-controlP5.Controller : int getHeight() 
-controlP5.Controller : int getId() 
-controlP5.Controller : int getWidth() 
-controlP5.Controller : int listenerSize() 
-controlP5.Controller : void remove() 
-controlP5.Controller : void setView(ControllerView, int) 
-java.lang.Object : String toString() 
-java.lang.Object : boolean equals(Object) 
-
-
-*/
