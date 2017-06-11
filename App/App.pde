@@ -19,7 +19,7 @@ String fontName = "Avenir-Light";
 Calendar testCal; // for rolling & adding when drawing the layouts (like a physics test charge xD we use it to do relative stuff)
 ControlP5 cp5;
 Date now;
-EventCollection events;
+MyBST events;
 DayCollection days;
 
 int layout;
@@ -73,7 +73,7 @@ void setup() {
      .setPosition(6 * navButtonWidth + 60, 10)
      .setSize(navButtonWidth, navButtonHeight);
      
-  events = new EventCollection("data.in");
+  events = new MyBST("data.in");
   testCal = Calendar.getInstance();
   Month(0);
 }

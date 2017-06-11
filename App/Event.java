@@ -39,6 +39,12 @@ public class Event implements Comparable<Event> {
             return me.compareTo(you);
         }
     }
+
+    public int compareDateTo(Event e) {
+        Date me = new Date(year, month, date);
+        Date you = new Date(e.year, e.month, e.date);
+        return me.compareTo(you);
+    }
     
     public void setName(String name) {
         this.name = name;
