@@ -12,7 +12,7 @@ final int navButtonHeight = 20;
 final int MONTH_EVENT_HEIGHT = 17;
 final int gray = 120; // red is rgb(234, 76, 60)
 
-PFont font24, font20, font15, font12, font10;
+PFont font40, font30, font24, font20, font15, font12, font10;
 String fontName = "Avenir-Light";
 
 Calendar testCal; // for rolling & adding when drawing the layouts (like a test charge xd we use it to do relative stuff)
@@ -26,7 +26,7 @@ int startYear, startMonth, startDay;
 
 String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 String[] daysOfWeekLetter = {"S", "M", "T", "W", "T", "F", "S"};
-String[] daysOfWeek = {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
+String[] daysOfWeekAbbrv = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 String[] daysOfWeekFull = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void setup() {
@@ -35,13 +35,14 @@ void setup() {
   cp5 = new ControlP5(this);
   layout = 0; // default is month layout
   
+  font40 = loadFont(fontName + "-40.vlw");
+  font30 = loadFont(fontName + "-30.vlw");
   font24 = loadFont(fontName + "-24.vlw");
   font20 = loadFont(fontName + "-20.vlw");
   font15 = loadFont(fontName + "-15.vlw");
   font12 = loadFont(fontName + "-12.vlw");
   font10 = loadFont(fontName + "-10.vlw");
   
-  // create a new button with name 'buttonA'
   cp5.addButton("Day")
      .setValue(0)
      .setPosition(0, 10)
@@ -58,23 +59,41 @@ void setup() {
      .setValue(03)
      .setPosition(3 * navButtonWidth + 30, 10)
      .setSize(navButtonWidth, navButtonHeight);
-     
-  initCalendar();
-  drawDaysInMonth();
+   cp5.addButton("Previous")
+     .setValue(03)
+     .setPosition(4 * navButtonWidth + 40, 10)
+     .setSize(navButtonWidth, navButtonHeight);
+   cp5.addButton("Next")
+     .setValue(03)
+     .setPosition(5 * navButtonWidth + 50, 10)
+     .setSize(navButtonWidth, navButtonHeight);
+   events = new EventCollection("data.in");
+  testCal = Calendar.getInstance();
+  Month(0);
 }
 
-void drawHeader(int layout){
+void drawHeader() {
+  
   fill(0);
-  PFont font = loadFont("ArialHebrew-120.vlw");
-  textFont(font, 40);
-  if (layout == 0){ //month
-    text( months[ testCal.get( Calendar.MONTH ) + 1 ] + " " + testCal.get(Calendar.YEAR), 10, 55 + navButtonHeight);
-    textFont(font, 20);
-    String space = "                 ";
-    text("Sun"+space+"  Mon"+space+" Tues"+space+"  Wed"+space+"  Thurs"+space+"Fri"+space+"    Sat", 10, 90 + navButtonHeight);
-  } else if (layout == 1){ //week
+  textFont(font40, 40);
+  
+  if (layout == 0) { // month layout 
+    int relX = 10;
+    int relY = navButtonHeight + 55;
+  
+    // draw title
+    text( months[ testCal.get( Calendar.MONTH ) + 1 ] + " " + testCal.get(Calendar.YEAR), relX, relY );
+    
+    // draw labels for days of week
+    relY  += HEADER_HEIGHT - relY - 10;
+    textFont(font20, 20);
+    for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+      text( daysOfWeekAbbrv[ dayOfWeek ], relX + dayOfWeek * CAL_WIDTH / 7 + (27 * CAL_WIDTH / 7 / 40), relY );
+    }
+  } 
+  else if (layout == 1){ // week
     text(months[testCal.get(Calendar.MONTH)] + " " + testCal.get(Calendar.YEAR), 0, 50 + navButtonHeight);
-    textFont(font, 20);
+    textFont(font20, 20);
     String space = "                ";
     SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
     Calendar tempCal = Calendar.getInstance();
@@ -84,24 +103,23 @@ void drawHeader(int layout){
     int xpos = 75;
     int ypos = 80 + navButtonHeight;
     for(int i = 0; i < 7; i++){
-      text(daysOfWeek[i] + "  " + (weekDate + i), xpos, ypos);
+      text(daysOfWeekAbbrv[i] + "  " + (weekDate + i), xpos, ypos);
       xpos += xChange;
     }
-} else if (layout == 2) { // day
+  } else if (layout == 2) { // day
     text(months[testCal.get(Calendar.MONTH)] + " " + testCal.get(Calendar.DAY_OF_MONTH), 0, 50 + navButtonHeight);
-    textFont(font, 30);
+    textFont(font30, 30);
     text(daysOfWeekFull[testCal.get(Calendar.DAY_OF_WEEK)-1], 0, 80 + navButtonHeight);
-  } else if (layout == 3) { // year
-    text(testCal.get(Calendar.YEAR) + " ", 0, 50 + navButtonHeight);
-    textFont(font, 30);
-    text(testCal.get(Calendar.DATE), 0, 90 + navButtonHeight);
+  } 
+  else if (layout == 3) { // year
+    text( testCal.get(Calendar.YEAR), 20, 50 + navButtonHeight);
   }
   fill(255);
 }
 
 void drawDay(int y, int m, int d){
   background(255);
-  drawHeader(2);
+  drawHeader();
   fill(255);
   Calendar cal = new GregorianCalendar();
   fill(0);
@@ -154,7 +172,7 @@ void drawDay(int y, int m, int d){
 
 void drawDaysInWeek(int y, int m, int d){
   background(255);
-  drawHeader(1);
+  drawHeader();
   Event[] e = events.getEventsInWeek(y, m, d);
   SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
   Calendar tempCal = Calendar.getInstance();
@@ -169,10 +187,14 @@ void drawDaysInWeek(int y, int m, int d){
   }
 }
 
-void drawYear(){ // just removed parameters and have not ajdusted
+void drawYear() {
+  
+  int originalYear = testCal.get( Calendar.YEAR );
+  int originalMonth = testCal.get( Calendar.MONTH );
+  int originalDate = testCal.get( Calendar.DATE );
 
   background(255);
-  drawHeader(3);
+  drawHeader();
   
   int xpos = 40;
   int ypos = HEADER_HEIGHT;
@@ -180,7 +202,7 @@ void drawYear(){ // just removed parameters and have not ajdusted
   int monthWidth = (CAL_WIDTH - 40) / 4;
   int monthHeight = CAL_HEIGHT / 3;  
   
-  Calendar trackerCal = Calendar.getInstance();
+  Calendar trackerCal = testCal;
   while (trackerCal.get(Calendar.MONTH) > 0) {
     trackerCal.add( Calendar.MONTH, -1 );
   }
@@ -188,7 +210,6 @@ void drawYear(){ // just removed parameters and have not ajdusted
     trackerCal.add( Calendar.DATE, -1 );
   }
   stroke(255);
-  
   int trackerY, trackerM, trackerD;
   
   for(int monthNum = 0; monthNum < 12; monthNum++) {
@@ -241,16 +262,53 @@ void drawYear(){ // just removed parameters and have not ajdusted
     }    
     fill(255);
   }
+  
+  int currentYear = testCal.get( Calendar.YEAR );
+  int currentMonth = testCal.get( Calendar.MONTH );
+  int currentDate = testCal.get( Calendar.DATE );
+  testCal.add( Calendar.YEAR, originalYear - currentYear ); 
+  testCal.add( Calendar.MONTH, originalMonth - currentMonth ); 
+  testCal.add( Calendar.DATE, originalDate - currentDate ); 
 }
 
 void printCal(Calendar c) {
   println(c.get(Calendar.DAY_OF_WEEK)+", " + c.get(Calendar.MONTH)+"/"+c.get(Calendar.DATE)+"/"+c.get(Calendar.YEAR));
 }
 
-void initCalendar() {
-  events = new EventCollection("data.in");
-  testCal = Calendar.getInstance();   
-  
+void draw() {
+  fill(255);
+}
+
+void mousePressed() {
+  if (mouseY > HEADER_HEIGHT) {
+    if (layout == 0) {
+      Day editMe = findDay();    
+      if (editMe.hasMouseOnEvent()) {
+        editMe.editEvent();
+      } else if (editMe.hasMouseOnWindow()) {
+        editMe.newEventWindow();
+      }
+      editMe.display(editMe.i, editMe.col);
+    }  
+  }
+}
+
+void mouseReleased() {
+}
+
+// precondition: mouseY > HEADER_HEIGHT
+Day findDay() {
+  int calCol = mouseX / (CAL_WIDTH / 7);
+  int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
+  int dayNum = calRow * 7 + calCol;
+      
+  return days.get( days.size() - (42 - dayNum ));
+}
+
+void drawMonth() {
+  int originalYear = testCal.get( Calendar.YEAR );
+  int originalMonth = testCal.get( Calendar.MONTH );
+  int originalDate = testCal.get( Calendar.DATE );
   int focusMonth = testCal.get( Calendar.MONTH );
   // set start month to the month before
   while ( testCal.get( Calendar.MONTH ) == focusMonth ) {
@@ -260,44 +318,10 @@ void initCalendar() {
   while (  testCal.get( Calendar.DAY_OF_WEEK ) != 1 ) {
     testCal.add( Calendar.DATE, -1 );
   }
-}
-
-void draw() {
-  fill(255);
-}
-
-void mousePressed() {
-  if (layout == 0) {
-    Day editMe = findDay();
-    if (editMe.hasMouseOnEvent()) {
-      editMe.editEvent();
-    } else if (editMe.hasMouseOnWindow()) {
-      editMe.newEventWindow();
-    }
-    editMe.display(editMe.i, editMe.col);
-  }  
-}
-
-void mouseReleased() {
-}
-
-// precondition: mouseY > HEADER_HEIGHT
-Day findDay() {
-  int calCol = mouseX / (CAL_WIDTH / 7);
-  if (mouseY > HEADER_HEIGHT && layout == 0) {
-    int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
-    return days.get(calRow * 7 + calCol);
-  } else {
-    return days.get(calCol);
-  }
-}
-
-void drawDaysInMonth() {
   int currentYear, currentMonth, currentDate;
   background(255);
-  drawHeader(0);
+  drawHeader();
   layout = 0;
-  
   Event[] theseEvents = events.getEventsInMonth( testCal.get( Calendar.YEAR ), testCal.get( Calendar.MONTH ) );
   
   boolean onFocusMonth = false;  
@@ -327,26 +351,60 @@ void drawDaysInMonth() {
     testCal.add( Calendar.DATE, 1 );
     dayNum++;
   }
+  currentYear = testCal.get( Calendar.YEAR );
+  currentMonth = testCal.get( Calendar.MONTH );
+  currentDate = testCal.get( Calendar.DATE );
+  testCal.add( Calendar.YEAR, originalYear - currentYear ); 
+  testCal.add( Calendar.MONTH, originalMonth - currentMonth ); 
+  testCal.add( Calendar.DATE, originalDate - currentDate ); 
 }
 
-public void controlEvent(ControlEvent theEvent) {
-  if(theEvent.controller().getName() == "Day"){
-    layout = 2;
-    drawDay(startYear, startMonth, startDay);
+public void Day(int value) {
+  layout = 2;
+  drawDay(startYear, startMonth, startDay);
+}
+
+public void Week(int value) {
+  layout = 1;
+  drawDaysInWeek(startYear, startMonth, startDay);
+}
+
+public void Month(int value) {
+  layout = 0;
+  drawMonth();
+}
+
+public void Year(int value) {
+  layout = 3;
+  drawYear();
+}
+
+public void Previous(int value) {
+  if (layout == 0) {
+    testCal.add( Calendar.MONTH, -1 );
+    drawMonth();
   }
-  
-  if(theEvent.controller().getName() == "Week"){
-    layout = 1;
-    drawDaysInWeek(startYear, startMonth, startDay);
+  if (layout == 1) { // week
   }
-  
-  if(theEvent.controller().getName() == "Month"){
-    layout = 0;
-    drawDaysInMonth();
+  if (layout == 2) { // day
   }
-  
-  if(theEvent.controller().getName() == "Year"){
-    layout = 3;
+  if (layout == 3) {
+    testCal.add( Calendar.YEAR, -1 );
+    drawYear();
+  }
+}
+
+public void Next(int value) {
+  if (layout == 0) {
+    testCal.add( Calendar.MONTH, 1 );
+    drawMonth();
+  }
+  if (layout == 1) { // week
+  }
+  if (layout == 2) { // day
+  }
+  if (layout == 3) {
+    testCal.add( Calendar.YEAR, 1 );
     drawYear();
   }
 }

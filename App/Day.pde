@@ -163,11 +163,13 @@ class Day {
   }
   
   void newEventWindow() {
+    println(todayEvents);
     stroke(0);
     String eventName = JOptionPane.showInputDialog("Event Name:");
     if (eventName != null) {
       addEvent(new Event(eventName, year, month, date));
     }
+    println(todayEvents);
   }
   
   void addEvent(Event e) {
