@@ -4,16 +4,32 @@ import java.text.*;
 import java.io.*;
 import javax.swing.*;
 
-final Calendar todayCal = Calendar.getInstance(); // keeps track of today
+Calendar todayCal = Calendar.getInstance(); // keeps track of today
 final int CAL_WIDTH = 1050;
 final int CAL_HEIGHT = 642;
 final int HEADER_HEIGHT = 120;
 final int navButtonWidth = 80;
 final int navButtonHeight = 20;
 final int MONTH_EVENT_HEIGHT = 17;
+final int labelWidth = 49;
+final int timeLineThickness = 2;
+int boxWidth = (CAL_WIDTH - labelWidth) / 7;
+int boxHeight = CAL_HEIGHT / 27; // 24 time slots + 3 slots for all-day
+
+// for mini month drawing
+final int monthWidth = (CAL_WIDTH - 40) / 4;
+final int monthHeight = CAL_HEIGHT / 3;  
+final int dayWidth = 30;
+final int dayHeight = 27;
+
+boolean todayInWeek = false;
+boolean wasJustOn = false;
+
+// colors
 final int gray = 120; // red is rgb(234, 76, 60)
 
 PFont font40, font30, font24, font20, font15, font12, font10;
+PFont fontbold15;
 String fontName = "Avenir-Light";
 
 String DATA_FILE = "events.dat";
@@ -46,6 +62,8 @@ void setup() {
   font12 = loadFont(fontName + "-12.vlw");
   font10 = loadFont(fontName + "-10.vlw");
   
+  fontbold15 = loadFont("Avenir-Heavy-15.vlw");
+  
   cp5.addButton("Day")
      .setValue(0)
      .setPosition(0, 10)
@@ -77,7 +95,7 @@ void setup() {
      
   events = new MyBST( loadStrings( DATA_FILE ));
   testCal = Calendar.getInstance();
-  Month(0);
+  Week(0);
 }
 
 void drawHeader() {
@@ -100,20 +118,14 @@ void drawHeader() {
     }
   } 
   else if (layout == 1){ // week
-    text(months[testCal.get(Calendar.MONTH)] + " " + testCal.get(Calendar.YEAR), 0, 50 + navButtonHeight);
+  
+    text(months[ testCal.get(Calendar.MONTH) ] + " " + testCal.get(Calendar.YEAR), 0, 50 + navButtonHeight);
     textFont(font20, 20);
-    String space = "                ";
-    SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
-    Calendar tempCal = Calendar.getInstance();
-    tempCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-    int weekDate = tempCal.get(Calendar.DATE);
-    int xChange = (CAL_WIDTH - 75) / 7 + 5;
-    int xpos = 75;
-    int ypos = 80 + navButtonHeight;
     for(int i = 0; i < 7; i++){
-      text(daysOfWeekAbbrv[i] + "  " + (weekDate + i), xpos, ypos);
-      xpos += xChange;
+      text(daysOfWeekAbbrv[i] + " " + testCal.get(Calendar.DATE), labelWidth + ((CAL_WIDTH - labelWidth) / 7) * i + 40, 88 + navButtonHeight);
+      testCal.add(Calendar.DATE, 1);
     }
+    testCal.add(Calendar.DATE, -7);
   } else if (layout == 2) { // day
     text(months[testCal.get(Calendar.MONTH)] + " " + testCal.get(Calendar.DAY_OF_MONTH), 0, 50 + navButtonHeight);
     textFont(font30, 30);
@@ -136,72 +148,74 @@ void drawDay() {
   Calendar cal = new GregorianCalendar();
   fill(0);
 
-  //
-  //BUG : getEventsInDay doesn't work?
-  //
   ArrayList<Event> dayEvents = events.findEvents( originalYear, originalMonth, originalDate );
   Day day = new Day( originalYear, originalMonth, originalDate );
   day.add( dayEvents );
   
   int dayX = 50;
   int dayY = HEADER_HEIGHT + 20;
-  boolean switched = false;
-  int col = gray;
-  textFont( font12, 12 );
-  fill( gray );
-  for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-    text( daysOfWeekLetter[ dayOfWeek ], dayX + (dayOfWeek * 30), dayY );
-  }
-  dayY += 30;
-  dayX = 50;
-  //f
-  for(int t = 0; t < 42; t++){
-    if ( cal.get(Calendar.DATE) == 1 ) {
-      if (switched) {
-        col = gray;
-      } else {
-        col = 0;
-        switched = true;
-      }
-    }
-    if(cal.get(Calendar.MONTH) == originalMonth && cal.get(Calendar.DATE) == originalDate){
-      fill(255, 0, 0);
-      ellipse(dayX + 6, dayY - 5, 20, 20);
-      fill(255);
-      text(cal.get(Calendar.DATE), dayX, dayY);
-    }else{
-      fill(col);
-      text(cal.get(Calendar.DATE), dayX, dayY);
-    }
-    dayX += 30;
-    if(t % 7 == 6){
-      dayX = 50;
-      dayY += 20;
-    }
-    cal.add(Calendar.DATE, 1);  
-  }
+  drawSmallMonth( dayX, dayY, false );
   //rect(0, HEADER_HEIGHT, 350, CAL_HEIGHT - HEADER_HEIGHT);
   fill(255);
   day.display(); //change col
 } 
 
-void drawDaysInWeek(int y, int m, int d){
-  layout = 1;
+void drawWeek() {
+  int originalYear = testCal.get( Calendar.YEAR );
+  int originalMonth = testCal.get( Calendar.MONTH );
+  int originalDate = testCal.get( Calendar.DATE );
+  int currentYear, currentMonth, currentDate;
   background(255);
-  drawHeader();
-  int eventTracker = 0;
-  ArrayList<Event> e = events.findEvents(y, m, d);
-  SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
-  Calendar tempCal = Calendar.getInstance();
-  tempCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-  for(int i = 0; i < 7; i++){ //covers year and month rollovers
-    int dayNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(3, 5));
-    int monthNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(0, 2));
-    int yearNum = Integer.parseInt(sdf.format(tempCal.getTime()).substring(6));
-    Day day = new Day(yearNum, monthNum, dayNum);
-    day.display();
-    tempCal.roll(Calendar.DAY_OF_WEEK, 1);
+  layout = 1;
+  drawHeader();  
+  textFont(font12, 12);
+  fill( 0 );
+  
+  int relY = HEADER_HEIGHT;
+  int relX = 7;
+  text("all-day", relX, relY + 20);
+
+  // draw labels from 12a to 11a
+  relY += 3 * boxHeight;
+  relY += 10; // to adjust for time label
+  text("12 AM", relX, relY );
+  for (int t = 1; t < 12; t++) {
+    if (t < 10) {
+      text("   " + t + " AM", relX, relY + boxHeight * t);
+    } else {
+      text(" " + t + " AM", relX, relY + boxHeight * t);
+    }
   }
+  
+  // draw labels from 12p to 11p
+  text("12 PM", relX, relY  + boxHeight * 12);
+  for (int t = 1; t < 12; t++) {
+    if (t < 10) {
+      text("   " + t + " PM", relX, relY + boxHeight * (t + 12));
+    } else {
+      text(" " + t + " PM", relX, relY + boxHeight * (t + 12));
+    }
+  }
+  
+  relY -= 10; // because of the previous adjust for time label
+  
+  fill( 0 );
+  int dayNum = 0;
+  while ( dayNum < 7) {
+    currentYear = testCal.get( Calendar.YEAR );
+    currentMonth = testCal.get( Calendar.MONTH );
+    currentDate = testCal.get( Calendar.DATE );    
+    if (currentYear == todayCal.get( Calendar.YEAR ) && currentMonth == todayCal.get( Calendar.MONTH ) && currentDate == todayCal.get( Calendar.DATE )) {
+      todayInWeek = true;
+    }
+    Day day = new Day( currentYear, currentMonth, currentDate, dayNum, 0 );
+    day.display();
+    days.add(day);
+    testCal.add( Calendar.DATE, 1 );
+    dayNum++;
+  }
+  testCal.add( Calendar.DATE, -7 );
+
 }
 
 void drawMonth() {
@@ -239,7 +253,6 @@ void drawMonth() {
     }
     
     Day day = new Day( currentYear, currentMonth, currentDate, dayNum, currentColor );
-    println("day @ " + day);
     day.display();
     days.add(day);
     testCal.add( Calendar.DATE, 1 );
@@ -263,72 +276,91 @@ void drawYear() {
   drawHeader();
   
   int xpos = 40;
-  int ypos = HEADER_HEIGHT;
+  int ypos = HEADER_HEIGHT;  
   
-  int monthWidth = (CAL_WIDTH - 40) / 4;
-  int monthHeight = (CAL_HEIGHT - HEADER_HEIGHT) / 3;  
-  
-  Calendar trackerCal = testCal;
-  while (trackerCal.get(Calendar.MONTH) > 0) {
-    trackerCal.add( Calendar.MONTH, -1 );
-  }
-  while (trackerCal.get(Calendar.DATE) > 1) {
-    trackerCal.add( Calendar.DATE, -1 );
-  }
+  testCal.add( Calendar.MONTH, -testCal.get( Calendar.MONTH ));
   stroke(255);
   int trackerY, trackerM, trackerD;
   
   for(int monthNum = 0; monthNum < 12; monthNum++) {
     
-    boolean colorSwitched = false;
-    int currentColor = gray;
-    
-    int relX = xpos + (monthNum % 4) * monthWidth;
-    int relY = ypos + (monthNum / 4) * monthHeight;
-
-    fill( 234, 76, 60 );
-    textFont( font20, 20 );
-    text( months[ monthNum ], relX, relY ); // write month name
-    
-    // begin drawing numbers
-    relY += 20;
-    textFont( font12, 12 );
-    fill( gray );
-    for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-      text( daysOfWeekLetter[ dayOfWeek ], relX + dayOfWeek * 30, relY );
-    }
-    
-    // setting calendar to the first Sunday of the month
-    while ( trackerCal.get( Calendar.MONTH ) == monthNum ) {
-      trackerCal.add( Calendar.DATE, -1 );
-    }
-    while ( trackerCal.get( Calendar.DAY_OF_WEEK ) != 1 ) {
-      trackerCal.add( Calendar.DATE, -1 );
-    }
-    
-    trackerY = trackerCal.get( Calendar.YEAR );
-    trackerM = trackerCal.get( Calendar.MONTH );
-    trackerD = trackerCal.get( Calendar.DATE );
-    
-    // drawing dates    
-    fill( 0 );
-    relY += 20;
-    for(int dayNum = 0; dayNum < 42; dayNum++){
-      if ( trackerCal.get(Calendar.DATE) == 1 ) {
-        if ( colorSwitched ) {
-          currentColor = gray;
-        } else {
-          currentColor = 0;
-          colorSwitched = true;
-        }
-      }
-      fill(currentColor);
-      text( trackerCal.get(Calendar.DATE), relX + (dayNum % 7) * 30, relY + (dayNum / 7) * 20 );
-      trackerCal.add(Calendar.DATE, 1);
-    }    
+    drawSmallMonth(xpos + (monthNum % 4) * monthWidth, ypos + (monthNum / 4) * monthHeight, true);
     fill(255);
   }
   
+  int currentYear = testCal.get( Calendar.YEAR );
+  int currentMonth = testCal.get( Calendar.MONTH );
+  int currentDate = testCal.get( Calendar.DATE );
+  testCal.add( Calendar.YEAR, originalYear - currentYear ); 
+  testCal.add( Calendar.MONTH, originalMonth - currentMonth ); 
+  testCal.add( Calendar.DATE, originalDate - currentDate ); 
+}
+
+void drawSmallMonth(int xpos, int ypos, boolean drawMonthHeader) {
+  int originalYear = testCal.get( Calendar.YEAR );
+  int originalMonth = testCal.get( Calendar.MONTH );
+  int originalDate = testCal.get( Calendar.DATE );
+  
+  boolean colorSwitched = false;
+  int currentColor = gray;
+  
+  int relX = xpos;
+  int relY = ypos;
+
+  if (drawMonthHeader) {
+    fill( 234, 76, 60 );
+    textFont( font20, 20 );
+    text( months[ testCal.get( Calendar.MONTH ) ], relX, relY ); // write month name
+    relY += dayHeight;
+  }
+    
+  // begin drawing numbers  
+  textFont( font12, 12 );
+  fill( gray );
+  for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+    text( daysOfWeekLetter[ dayOfWeek ], relX + dayOfWeek * 30, relY );
+  }
+  
+  testCal.add( Calendar.DATE, -testCal.get( Calendar.DATE ));
+  testCal.add( Calendar.DATE, 1 - testCal.get( Calendar.DAY_OF_WEEK ));
+  
+  int trackerY = testCal.get( Calendar.YEAR );
+  int trackerM = testCal.get( Calendar.MONTH );
+  int trackerD = testCal.get( Calendar.DATE );
+  
+  // drawing dates    
+  fill( 0 );
+  relY += dayHeight;
+  for(int dayNum = 0; dayNum < 42; dayNum++) {
+    if ( testCal.get(Calendar.DATE) == 1 ) {
+      if ( colorSwitched ) {
+        currentColor = gray;
+      } else {
+        currentColor = 0;
+        colorSwitched = true;
+      }
+    }
+    
+    if ( currentColor == 0 && // make sure we are on the focus month
+         testCal.get( Calendar.YEAR) == todayCal.get( Calendar.YEAR) &&
+         testCal.get( Calendar.MONTH) == todayCal.get( Calendar.MONTH) &&
+         testCal.get( Calendar.DATE) == todayCal.get( Calendar.DATE) ) {
+      fill(255, 0, 0);
+      stroke(255);
+      if ( testCal.get( Calendar.DATE ) < 10 ) {
+        ellipse(relX + (dayNum % 7) * dayWidth + 3.5, relY + (dayNum / 7) * dayHeight - 5.8, 20, 20);
+      } else {
+        ellipse(relX + (dayNum % 7) * dayWidth + 6.5, relY + (dayNum / 7) * dayHeight - 5, 20, 20);
+      }
+      fill(255);
+      text( testCal.get(Calendar.DATE), relX + (dayNum % 7) * dayWidth, relY + (dayNum / 7) *dayHeight );
+      fill( currentColor );
+    } else {        
+      fill(currentColor);
+      text( testCal.get(Calendar.DATE), relX + (dayNum % 7) * dayWidth, relY + (dayNum / 7) *dayHeight );
+    }
+    testCal.add(Calendar.DATE, 1);
+  }    
   int currentYear = testCal.get( Calendar.YEAR );
   int currentMonth = testCal.get( Calendar.MONTH );
   int currentDate = testCal.get( Calendar.DATE );
@@ -343,13 +375,48 @@ void printCal() {
 
 void draw() {
   fill(255);
+  todayCal = Calendar.getInstance();
+  if (layout == 1) {
+    if ( todayInWeek ) {
+      fill(255, 0, 0);
+      rect(labelWidth,
+           HEADER_HEIGHT + 3 * boxHeight + (todayCal.get(Calendar.HOUR_OF_DAY) * 60 + todayCal.get(Calendar.MINUTE)) / 60.0 * boxHeight, 
+           CAL_WIDTH, 
+           timeLineThickness);
+    }
+  }
 }
+
+String getTime() {
+  String hour;
+  if ( todayCal.get(Calendar.HOUR) == 0) {
+      hour = "12";
+  } else {
+      hour = "" + todayCal.get(Calendar.HOUR);
+  }
+  String minute;
+  if ( todayCal.get(Calendar.MINUTE) < 10) {
+      minute = "0" + todayCal.get(Calendar.MINUTE) % 60;
+  } else {
+      minute = "" + todayCal.get(Calendar.MINUTE) % 60;
+  }
+  String meridiem;
+  if (todayCal.get(Calendar.HOUR_OF_DAY) < 12) {
+      meridiem = "a";
+  } else {
+      meridiem = "p";
+  }
+  return hour + ":" + minute + meridiem;
+}
+  
 
 void mousePressed() {
   if (mouseY > HEADER_HEIGHT) {
     if (layout == 0) {
-      Day editMe = findDay();   
-      println("mouse pressed on day " + editMe);
+      int calCol = mouseX / (CAL_WIDTH / 7);
+      int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
+      int dayNum = calRow * 7 + calCol;
+      Day editMe = days.get( days.size() - (42 - dayNum ));
       int mouseOnEventStatus = editMe.hasMouseOnEvent();
       if (mouseOnEventStatus == 1) {
         editMe.editEvent();
@@ -358,21 +425,24 @@ void mousePressed() {
       } else if (editMe.hasMouseOnWindow()) {
         editMe.newEventWindow();
       }
+      
       editMe.display();
-    }  
+    }
+    if (layout == 1) {
+      int calCol = (mouseX - 50) / (CAL_WIDTH / 7);
+      Day editMe = days.get( days.size() - (7 - calCol));
+      
+      if ( !editMe.tryEditingEvent() ) {
+        editMe.newEventWindow();
+      }
+      
+      editMe.display();
+    }
+  
   }
 }
 
 void mouseReleased() {
-}
-
-// precondition: mouseY > HEADER_HEIGHT
-Day findDay() {
-  int calCol = mouseX / (CAL_WIDTH / 7);
-  int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
-  int dayNum = calRow * 7 + calCol;
-      
-  return days.get( days.size() - (42 - dayNum ));
 }
 
 public void Day(int value) {
@@ -380,7 +450,7 @@ public void Day(int value) {
 }
 
 public void Week(int value) {
-  drawDaysInWeek(startYear, startMonth, startDay);
+  drawWeek();
 }
 
 public void Month(int value) {
@@ -398,6 +468,7 @@ public void Previous(int value) {
   }
   if (layout == 1) { // week
     testCal.add( Calendar.DATE, -7 );
+    drawWeek();
   }
   if (layout == 2) { // day
     testCal.add( Calendar.DATE, -1 );
@@ -415,6 +486,7 @@ public void Next(int value) {
   }
   if (layout == 1) { // week
     testCal.add( Calendar.DATE, 7 );
+    drawWeek();
   }
   if (layout == 2) { // day
     testCal.add( Calendar.DATE, 1 );
@@ -431,6 +503,7 @@ public void Today(int value) {
     drawMonth();
   }
   if (layout == 1) { // week
+    drawWeek();
   }
   if (layout == 2) { // day
   }

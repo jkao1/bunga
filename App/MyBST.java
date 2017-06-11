@@ -27,7 +27,6 @@ public class MyBST {
         Scanner in = null;
         try {
             in = new Scanner( new File( filename ));
-            System.out.println(in);
             while ( in.hasNextLine() ) {
                 insertEvent( in.nextLine() );                
             }
@@ -45,6 +44,7 @@ public class MyBST {
         String description =  "";
         int duration = 60;
         int type = (int) (Math.random() * 4);
+        int startTime = 0;
         name = line.next();
         year = line.nextInt();
         month = line.nextInt();
@@ -58,7 +58,10 @@ public class MyBST {
         if ( line.hasNext() ) {
             type = line.nextInt();
         }
-        Event e = new Event( name, year, month, date, duration, description, type );
+        if ( line.hasNext() ) {
+            startTime = line.nextInt();
+        }
+        Event e = new Event( name, year, month, date, duration, description, type, startTime );
         insert( e );
     }
     
@@ -223,7 +226,6 @@ public class MyBST {
 
     public Event[] getAllEvents() {
         return getAllEvents( root ).toArray(new Event[] {});
-
     }
 
     /* solution proposed by https://stackoverflow.com/a/13870328 */

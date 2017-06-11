@@ -18,7 +18,7 @@ public class MyHeap {
             O_CONST = -1;
         }
     }
-    
+
     public boolean isEmpty() {
         return size <= 1;
     }
