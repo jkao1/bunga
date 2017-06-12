@@ -38,30 +38,44 @@ class Helper extends PApplet {
     cp5.addButton("Day")
      .setValue(0)
      .setPosition(0, 10)
-     .setSize(navButtonWidth, navButtonHeight);
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(225)
+     .setColorForeground(0);
   cp5.addButton("Week")
      .setValue(100)
      .setPosition(navButtonWidth + 10, 10)
-     .setSize(navButtonWidth, navButtonHeight);    
+     .setSize(navButtonWidth, navButtonHeight)  
+     .setColorBackground(225)
+     .setColorForeground(0);
   cp5.addButton("Month")
      .setValue(90)
      .setPosition(2 * navButtonWidth + 20, 10)
-     .setSize(navButtonWidth, navButtonHeight);
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(225)
+     .setColorForeground(0);
   cp5.addButton("Year")
      .setValue(03)
      .setPosition(3 * navButtonWidth + 30, 10)
-     .setSize(navButtonWidth, navButtonHeight);
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(225)
+     .setColorForeground(0);
    cp5.addButton("Previous")
      .setValue(03)
      .setPosition(4 * navButtonWidth + 40, 10)
-     .setSize(navButtonWidth, navButtonHeight);
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(225)
+     .setColorForeground(0);
    cp5.addButton("Today")
      .setValue(03)
      .setPosition(5 * navButtonWidth + 50, 10)
-     .setSize(navButtonWidth, navButtonHeight);
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(225)
+     .setColorForeground(0);
    cp5.addButton("Next")
      .setValue(03)
      .setPosition(6 * navButtonWidth + 60, 10)
-     .setSize(navButtonWidth, navButtonHeight);
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(225)
+     .setColorForeground(0);
   }
 }
