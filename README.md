@@ -3,6 +3,7 @@
 # calendar-wu
 Why is the font so blurry? :(
 ## Bugs
+- works on Mac, but for some reason, during our demo, a few sections of week were not showing up.
 - after a while, the time line will sweep a portion of the drawing. <img src=“bugs/timesweep.png”>. 
 - adjusting date for an event will not work graphically
 - in the DAY layout, clicking on an event in the timeline should automatically update the sidebar. However, the sidebar will not update until the event is updated
