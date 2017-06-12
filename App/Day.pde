@@ -185,7 +185,7 @@ class Day {
       int allDayEvents = 0;
       for (int i = 0; i < todayEvents.size(); i++) {        
         Event e = todayEvents.get( i );
-        if (i == 0) {
+        if (i == 0 && dayFocusEvent == null) {
           dayFocusEvent = e;
         }
         if (e.getType() == 0) {

@@ -130,7 +130,7 @@ void drawDay() {
 
   Day day = new Day( originalYear, originalMonth, originalDate );
   days.add( day );
-    
+
   int dayX = 0;
   int dayY = HEADER_HEIGHT;
   fill(230);
@@ -142,13 +142,8 @@ void drawDay() {
   drawTimeLabels( sideMonthWidth + 20, HEADER_HEIGHT);  
   fill(255);
   day.display();
-  
+
   dayY += 300;
-  // joyce wu one: the focused event of the day is dayFocusEvent. the logic behind which event is
-  // day focus event should be right, unless it's wrong (msg me). basic info about event is
-  // be written here.
-  
-  // String name, int year, int month, int date, int duration, String description, int type, int startTime
   dayY = sideMonthWidth - 20;
   fill(0);
   textFont(fontbold15, 18);
@@ -521,8 +516,6 @@ void showFocusedEvent() {
   if (layout == 2) {
     dayFocusEvent = focusedEvent;
   }
-  // make the event brighter?
-  // then,
 
   JDialog.setDefaultLookAndFeelDecorated(true);
   Object[] selectionValues = { "Name", "Date", "Start Time", "Duration", "Description", "Type", "Location" };
@@ -582,6 +575,7 @@ void showFocusedEvent() {
                                           "\nNew description:");
       if (input != null) {
         focusedEvent.description = input;
+        println(focusedEvent);
       }
     } else if (choice.equals("Type")) {
       Object[] selectionVals = { "School", "Work", "Extra Curricular", "Miscellaneous" };
