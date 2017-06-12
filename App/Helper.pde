@@ -57,17 +57,17 @@ class Helper extends PApplet {
      .setColorBackground(247);
    cp5.addButton("Previous")
      .setValue(03)
-     .setPosition(CAL_WIDTH - (3 * navButtonWidth) - 50, HEADER_HEIGHT - 60)
+     .setPosition(CAL_WIDTH - (3 * navButtonWidth) - 60, HEADER_HEIGHT - 60)
      .setSize(navButtonWidth, navButtonHeight)
      .setColorBackground(247);
    cp5.addButton("Today")
      .setValue(03)
-     .setPosition(CAL_WIDTH - (2 * navButtonWidth) - 50, HEADER_HEIGHT - 60)
+     .setPosition(CAL_WIDTH - (2 * navButtonWidth) - 60, HEADER_HEIGHT - 60)
      .setSize(navButtonWidth, navButtonHeight)
      .setColorBackground(247);
    cp5.addButton("Next")
      .setValue(03)
-     .setPosition(CAL_WIDTH - navButtonWidth - 50, HEADER_HEIGHT - 60)
+     .setPosition(CAL_WIDTH - navButtonWidth - 60, HEADER_HEIGHT - 60)
      .setSize(navButtonWidth, navButtonHeight)
      .setColorBackground(247);
   }
