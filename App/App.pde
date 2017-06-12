@@ -99,7 +99,7 @@ void drawHeader() {
   } 
   else if (layout == 1){ // week
   
-    text(months[ testCal.get(Calendar.MONTH) ] + " " + testCal.get(Calendar.YEAR), 0, 50 + navButtonHeight);
+    text(months[ testCal.get(Calendar.MONTH) ] + " " + testCal.get(Calendar.YEAR), 10, 50 + navButtonHeight);
     textFont(font20, 20);
     for(int i = 0; i < 7; i++){
       text(daysOfWeekAbbrv[i] + " " + testCal.get(Calendar.DATE), labelWidth + ((CAL_WIDTH - labelWidth) / 7) * i + 40, 88 + navButtonHeight);
@@ -130,12 +130,12 @@ void drawDay() {
   days.add( day );
     
   int dayX = 0;
-  int dayY = 0;
+  int dayY = HEADER_HEIGHT;
   fill(230);
   rect(dayX, dayY, sideMonthWidth, HEADER_HEIGHT + CAL_HEIGHT);
   fill(0);
-  dayX += 20;
-  dayY += navButtonHeight + 30;
+  dayX += sideMonthWidth / 4;
+  dayY += 40;
   drawSmallMonth( dayX, dayY, false );
   drawTimeLabels( sideMonthWidth + 20, HEADER_HEIGHT);  
   fill(255);
@@ -473,6 +473,7 @@ public void Previous(int value) {
   }
   if (layout == 2) { // day
     testCal.add( Calendar.DATE, -1 );
+    drawDay();
   }
   if (layout == 3) {
     testCal.add( Calendar.YEAR, -1 );
@@ -491,6 +492,7 @@ public void Next(int value) {
   }
   if (layout == 2) { // day
     testCal.add( Calendar.DATE, 1 );
+    drawDay();
   }
   if (layout == 3) {
     testCal.add( Calendar.YEAR, 1 );
@@ -507,6 +509,7 @@ public void Today(int value) {
     drawWeek();
   }
   if (layout == 2) { // day
+    drawDay();
   }
   if (layout == 3) {
     drawYear();

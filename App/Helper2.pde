@@ -10,7 +10,8 @@ class Helper2 extends PApplet {
     cp5Two.addButton("Day")
      .setValue(0)
      .setPosition(0, 10)
-     .setSize(navButtonWidth, navButtonHeight);
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(247);
   }
 
   void settings() {
