@@ -85,7 +85,7 @@ void drawHeader() {
     int relY = navButtonHeight + 55;
   
     // draw title
-    text( months[ testCal.get( Calendar.MONTH ) + 1 ] + " " + testCal.get(Calendar.YEAR), relX, relY );
+    text( months[ todayCal.get( Calendar.MONTH ) + 1 ] + " " + todayCal.get(Calendar.YEAR), relX, relY );
     
     // draw labels for days of week
     relY  += HEADER_HEIGHT - relY - 10;
@@ -109,6 +109,7 @@ void drawHeader() {
     text(daysOfWeekFull[testCal.get(Calendar.DAY_OF_WEEK)-1], 0, 80 + navButtonHeight);
   } 
   else if (layout == 3) { // year
+    //System.out.println(testCal.get(Calendar.YEAR));
     text( testCal.get(Calendar.YEAR), 20, 50 + navButtonHeight);
   }
   fill(255);
@@ -268,6 +269,7 @@ void drawYear() {
   }
   
   int currentYear = testCal.get( Calendar.YEAR );
+  //System.out.println(originalYear + " " + currentYear);
   int currentMonth = testCal.get( Calendar.MONTH );
   int currentDate = testCal.get( Calendar.DATE );
   testCal.add( Calendar.YEAR, originalYear - currentYear ); 
