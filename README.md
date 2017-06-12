@@ -2,6 +2,7 @@
 Why is the font so blurry? :(
 ## Bugs
 - duplicate events from input file do not work
+- after a while, the time line will sweep a portion of the drawing. <img src=“bugs/timesweep.png”>. 
 
 ## Features
 - displays days within any given month and year in a grid

@@ -5,26 +5,24 @@
 
 
 class Helper extends PApplet {
+  
   ControlP5 cp5;
-  Helper2 secondHelper;
+
   Helper(PApplet pApplet) {
-    cp5 = new ControlP5(pApplet);
-    
-    PApplet.runSketch(new String[] {this.getClass().getSimpleName()}, this);
+    cp5 = new ControlP5(pApplet);    
     makeButtons();
-    secondHelper = new Helper2(this);
-    
+    PApplet.runSketch(new String[] {this.getClass().getSimpleName()}, this);    
   }
 
   void settings() {
     size(300, 500);
   }
   void setup() {
-    
+    size(300, 500);
   }
   
   void showFocusedEvent() {
-    secondHelper.showFocusedEvent();
+    
   }
   
   void draw() {
@@ -59,15 +57,15 @@ class Helper extends PApplet {
      .setValue(03)
      .setPosition(CAL_WIDTH - (3 * navButtonWidth) - 60, 10)
      .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(247);   
+   cp5.addButton("Next")
+     .setValue(03)
+     .setPosition(CAL_WIDTH - navButtonWidth - 60, 10)
+     .setSize(navButtonWidth, navButtonHeight)
      .setColorBackground(247);
    cp5.addButton("Today")
      .setValue(03)
      .setPosition(CAL_WIDTH - (2 * navButtonWidth) - 60, 10)
-     .setSize(navButtonWidth, navButtonHeight)
-     .setColorBackground(247);
-   cp5.addButton("Next")
-     .setValue(03)
-     .setPosition(CAL_WIDTH - navButtonWidth - 60, 10)
      .setSize(navButtonWidth, navButtonHeight)
      .setColorBackground(247);
   }

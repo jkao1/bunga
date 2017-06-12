@@ -89,7 +89,7 @@ class Day {
         rect(relX+10, relY, CAL_WIDTH / 7 - 20, 15);
         fill(0);
         // write the event
-        text(e.toString(), relX + 20, relY + 12);
+        text(e.name, relX + 20, relY + 12);
         relY += MONTH_EVENT_HEIGHT;
       }      
       
@@ -255,6 +255,17 @@ class Day {
         }
         events.insert( new Event( eventName, year, month, date, duration, "", 0, getStartTime() ));
       }
+    } else if (layout == 2) {
+      String eventName = JOptionPane.showInputDialog("Event Name:");
+      if (eventName != null && eventName.length() > 0) {
+        int duration = 120; // default
+        if (mouseY - HEADER_HEIGHT < 3 * boxHeight) {
+          duration = 1440; // all day
+        }
+        Event e = new Event( eventName, year, month, date, duration, "", 0, getStartTime() );
+        events.insert( e );
+        println(e);
+      }
     }
   }
   
@@ -313,7 +324,8 @@ class Day {
   }
   
   boolean tryEditingEvent() {
-    if (layout == 1) { // week
+    println("checking event");
+    if (layout == 1 || layout == 2) { // week
       int allDayEvents = 0;
       for (Event e : todayEvents) {
         int relY = HEADER_HEIGHT;
@@ -349,9 +361,6 @@ class Day {
           return true;
         }
       }
-    }
-    if (layout == 2) { // day
-    
     }
     return false;
   }

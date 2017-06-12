@@ -17,7 +17,6 @@ final int sideMonthWidth = 400;
 int boxWidth = (CAL_WIDTH - labelWidth) / 7;
 int boxHeight = CAL_HEIGHT / 27; // 24 time slots + 3 slots for all-day
 
-
 Helper helper;
 Event focusedEvent = null;
 
@@ -66,16 +65,14 @@ void setup() {
   font15 = loadFont(fontName + "-15.vlw");
   font12 = loadFont(fontName + "-12.vlw");
   font10 = loadFont(fontName + "-10.vlw");
-  
   fontbold15 = loadFont("Avenir-Heavy-15.vlw");
   
-  
-     
   events = new MyBST( loadStrings( DATA_FILE ));
   testCal = Calendar.getInstance();
-  Day(0);
   
   helper = new Helper(this);
+  Month(0);
+  
 }
 
 void drawHeader() {
@@ -402,34 +399,41 @@ String getTime() {
 void mousePressed() {
   Day editMe;
   if (mouseY > HEADER_HEIGHT) {
-      if (layout == 0) {
-        int calCol = mouseX / (CAL_WIDTH / 7);
-        int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
-        int dayNum = calRow * 7 + calCol;
-        editMe = days.get( days.size() - (42 - dayNum ));
-        boolean mouseOnEvent = editMe.hasMouseOnEvent();
-        if (mouseOnEvent) {
-          if (mouseButton == RIGHT) {   
-            editMe.editEvent(false);
-          } else {
-            focusedEvent = editMe.editEvent(true);
-            showFocusedEvent();
-          }
+    if (layout == 0) {
+      int calCol = mouseX / (CAL_WIDTH / 7);
+      int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
+      int dayNum = calRow * 7 + calCol;
+      editMe = days.get( days.size() - (42 - dayNum ));
+      boolean mouseOnEvent = editMe.hasMouseOnEvent();
+      if (mouseOnEvent) {
+        if (mouseButton == RIGHT) {   
+          editMe.editEvent(false);
         } else {
-          editMe.newEventWindow();
+          focusedEvent = editMe.editEvent(true);
+          showFocusedEvent();
         }
-        editMe.display();
+      } else {
+        editMe.newEventWindow();
       }
-      if (layout == 1) {
-        int calCol = (mouseX - 50) / (CAL_WIDTH / 7);
-        editMe = days.get( days.size() - (7 - calCol));
-        
-        if ( !editMe.tryEditingEvent() ) { // an event can be edited
-          editMe.newEventWindow();
-        }
-        
-        editMe.display();
+      editMe.display();
+    }
+    if (layout == 1) {
+      int calCol = (mouseX - 50) / (CAL_WIDTH / 7);
+      editMe = days.get( days.size() - (7 - calCol));      
+      if ( !editMe.tryEditingEvent() ) { // an event can be edited
+        editMe.newEventWindow();
+      }      
+      editMe.display();
+    }
+    if (layout == 2 && mouseX >= sideMonthWidth + 3 * labelWidth / 2) {
+      println("in bounds");
+      editMe = days.get( days.size() - 1 );        
+      if ( !editMe.tryEditingEvent() ) {
+        println("new event");
+        editMe.newEventWindow();
       }
+      editMe.display();
+    }        
   }
 }
 
