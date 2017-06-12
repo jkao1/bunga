@@ -280,35 +280,36 @@ class Day {
    * returns 0 if mouse is not on an event, 1 otherwise
    * returns 2 if mouse is on "N more...", in which case the program will move to day layout
    */
-  int hasMouseOnEvent() {
+  boolean hasMouseOnEvent() {
     if (layout == 0) { // month
-      if ( todayEvents.size() > 3 ) {
-        return 2;
-      }
       int topY = ypos + 35;
       int botY = ypos + 35 + (todayEvents.size()) * MONTH_EVENT_HEIGHT;
       if ( mouseY >= topY && mouseY <= botY ) {
-        return 1;
+        return true;
       }
     }
-    return 0;
+    return false;
   }
   
-  void editEvent() {  
+  Event editEvent(boolean callHelper) {
+    Event editMe;
     if (layout == 0) {
       int eventNumber = 0;
       int topY = ypos + 35;
       fill(0);
-      while (ypos + 35 + eventNumber * (MONTH_EVENT_HEIGHT) > topY) {
-        topY += MONTH_EVENT_HEIGHT;
+      while (ypos + 35 + eventNumber * (MONTH_EVENT_HEIGHT) < mouseY) {
         eventNumber++;
       }    
-      Event editMe = todayEvents.get(eventNumber);
+      editMe = todayEvents.get(--eventNumber);
+      if (callHelper) {
+        return editMe;
+      }
       String newName = JOptionPane.showInputDialog("New name for event " + editMe);
       if (newName != null && newName.length() > 0) {
         editMe.setName(newName);
       }
     }
+    return new Event("BAD EDIT EVENT", -1, -1, -1);
   }
   
   boolean tryEditingEvent() {
@@ -320,20 +321,31 @@ class Day {
           allDayEvents++;
           if (mouseY >= HEADER_HEIGHT + (allDayEvents - 1) * boxHeight && 
               mouseY <= HEADER_HEIGHT + allDayEvents * boxHeight) {
-            String newName = JOptionPane.showInputDialog("New name for event " + e);
-            if (newName != null) {
-              e.setName(newName);
-            }
+              if (mouseButton == RIGHT) {
+                    
+                String newName = JOptionPane.showInputDialog("New name for event " + e);
+                if (newName != null) {
+                  e.setName(newName);
+                } 
+              } else {
+                focusedEvent = e;
+                showFocusedEvent();
+              }
             return true;
           }
         }
         else if (mouseY >= HEADER_HEIGHT + 3 * boxHeight + boxHeight * e.startTime / 60.0 && 
                  mouseY <= HEADER_HEIGHT + 3 * boxHeight + boxHeight * e.startTime / 60.0 + 
                            e.duration / 60.0 * boxHeight) {
-          String newName = JOptionPane.showInputDialog("New name for event " + e);
-          if (newName != null) {
-            e.setName(newName);
-          }
+          if (mouseButton == RIGHT) {  
+            String newName = JOptionPane.showInputDialog("New name for event " + e);
+            if (newName != null) {
+              e.setName(newName);
+            }
+          } else {            
+            focusedEvent = e;
+            showFocusedEvent();
+          }              
           return true;
         }
       }

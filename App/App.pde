@@ -400,34 +400,36 @@ String getTime() {
   
 
 void mousePressed() {
+  Day editMe;
   if (mouseY > HEADER_HEIGHT) {
-    if (layout == 0) {
-      int calCol = mouseX / (CAL_WIDTH / 7);
-      int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
-      int dayNum = calRow * 7 + calCol;
-      Day editMe = days.get( days.size() - (42 - dayNum ));
-      int mouseOnEventStatus = editMe.hasMouseOnEvent();
-      if (mouseOnEventStatus == 1) {
-        editMe.editEvent();
-      } else if (mouseOnEventStatus == 2) {
-        drawDay();
-      } else if (editMe.hasMouseOnWindow()) {
-        editMe.newEventWindow();
+      if (layout == 0) {
+        int calCol = mouseX / (CAL_WIDTH / 7);
+        int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
+        int dayNum = calRow * 7 + calCol;
+        editMe = days.get( days.size() - (42 - dayNum ));
+        boolean mouseOnEvent = editMe.hasMouseOnEvent();
+        if (mouseOnEvent) {
+          if (mouseButton == RIGHT) {   
+            editMe.editEvent(false);
+          } else {
+            focusedEvent = editMe.editEvent(true);
+            showFocusedEvent();
+          }
+        } else {
+          editMe.newEventWindow();
+        }
+        editMe.display();
       }
-      
-      editMe.display();
-    }
-    if (layout == 1) {
-      int calCol = (mouseX - 50) / (CAL_WIDTH / 7);
-      Day editMe = days.get( days.size() - (7 - calCol));
-      
-      if ( !editMe.tryEditingEvent() ) {
-        editMe.newEventWindow();
+      if (layout == 1) {
+        int calCol = (mouseX - 50) / (CAL_WIDTH / 7);
+        editMe = days.get( days.size() - (7 - calCol));
+        
+        if ( !editMe.tryEditingEvent() ) { // an event can be edited
+          editMe.newEventWindow();
+        }
+        
+        editMe.display();
       }
-      
-      editMe.display();
-    }
-  
   }
 }
 
@@ -441,7 +443,7 @@ void keyPressed() {
 void showFocusedEvent() {
   // make the event brighter?
   // then,
-  helper.showFocusedEvent();
+  println(focusedEvent);  helper.showFocusedEvent();
 }
 
 public void Day(int value) {
