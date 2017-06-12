@@ -89,7 +89,7 @@ class Day {
         rect(relX+10, relY, CAL_WIDTH / 7 - 20, 15);
         fill(0);
         // write the event
-        text(e.toString(), relX + 20, relY + 12);
+        text(e.name, relX + 20, relY + 12);
         relY += MONTH_EVENT_HEIGHT;
       }      
       
