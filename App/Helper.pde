@@ -37,45 +37,38 @@ class Helper extends PApplet {
   void makeButtons() {
     cp5.addButton("Day")
      .setValue(0)
-     .setPosition(0, 10)
+     .setPosition((CAL_WIDTH / 2) - (2 * navButtonWidth), 10)
      .setSize(navButtonWidth, navButtonHeight)
-     .setColorBackground(225)
-     .setColorForeground(0);
+     .setColorBackground(0);
   cp5.addButton("Week")
      .setValue(100)
-     .setPosition(navButtonWidth + 10, 10)
-     .setSize(navButtonWidth, navButtonHeight)  
-     .setColorBackground(225)
-     .setColorForeground(0);
+     .setPosition((CAL_WIDTH / 2) - navButtonWidth, 10)
+     .setSize(navButtonWidth, navButtonHeight)
+     .setColorBackground(247);
   cp5.addButton("Month")
      .setValue(90)
-     .setPosition(2 * navButtonWidth + 20, 10)
+     .setPosition(CAL_WIDTH / 2, 10)
      .setSize(navButtonWidth, navButtonHeight)
-     .setColorBackground(225)
-     .setColorForeground(0);
+     .setColorBackground(247);
   cp5.addButton("Year")
      .setValue(03)
-     .setPosition(3 * navButtonWidth + 30, 10)
+     .setPosition((CAL_WIDTH / 2) + navButtonWidth, 10)
      .setSize(navButtonWidth, navButtonHeight)
-     .setColorBackground(225)
-     .setColorForeground(0);
+     .setColorBackground(247);
    cp5.addButton("Previous")
      .setValue(03)
-     .setPosition(4 * navButtonWidth + 40, 10)
+     .setPosition(CAL_WIDTH - (3 * navButtonWidth) - 50, HEADER_HEIGHT - 60)
      .setSize(navButtonWidth, navButtonHeight)
-     .setColorBackground(225)
-     .setColorForeground(0);
+     .setColorBackground(247);
    cp5.addButton("Today")
      .setValue(03)
-     .setPosition(5 * navButtonWidth + 50, 10)
+     .setPosition(CAL_WIDTH - (2 * navButtonWidth) - 50, HEADER_HEIGHT - 60)
      .setSize(navButtonWidth, navButtonHeight)
-     .setColorBackground(225)
-     .setColorForeground(0);
+     .setColorBackground(247);
    cp5.addButton("Next")
      .setValue(03)
-     .setPosition(6 * navButtonWidth + 60, 10)
+     .setPosition(CAL_WIDTH - navButtonWidth - 50, HEADER_HEIGHT - 60)
      .setSize(navButtonWidth, navButtonHeight)
-     .setColorBackground(225)
-     .setColorForeground(0);
+     .setColorBackground(247);
   }
 }
