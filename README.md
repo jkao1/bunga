@@ -1,7 +1,6 @@
 ## USES CONTROLP5 LIBRARY!!
 
-# calendar-wu
-Why is the font so blurry? :(
+# bunga
 ## Bugs
 - works on Mac, but for some reason, during our demo, a few sections of week were not showing up.
 - after a while, the time line will sweep a portion of the drawing. <img src=“bugs/timesweep.png”>. 
