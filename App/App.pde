@@ -19,6 +19,7 @@ int boxHeight = CAL_HEIGHT / 27; // 24 time slots + 3 slots for all-day
 
 Helper helper;
 Event focusedEvent = null;
+Event dayFocusEvent = null;
 
 
 // for mini month drawing
@@ -34,7 +35,7 @@ boolean wasJustOn = false;
 final int gray = 120; // red is rgb(234, 76, 60)
 
 PFont font40, font30, font24, font20, font15, font12, font10;
-PFont fontbold15;
+PFont fontbold30, fontbold15;
 String fontName = "Avenir-Light";
 
 String DATA_FILE = "events.dat";
@@ -65,6 +66,8 @@ void setup() {
   font15 = loadFont(fontName + "-15.vlw");
   font12 = loadFont(fontName + "-12.vlw");
   font10 = loadFont(fontName + "-10.vlw");
+  
+  fontbold30 = loadFont("Avenir-Heavy-30.vlw");
   fontbold15 = loadFont("Avenir-Heavy-15.vlw");
   
   events = new MyBST( loadStrings( DATA_FILE ));
@@ -104,9 +107,10 @@ void drawHeader() {
     }
     testCal.add(Calendar.DATE, -7);
   } else if (layout == 2) { // day
-    text(months[testCal.get(Calendar.MONTH)] + " " + testCal.get(Calendar.DAY_OF_MONTH), 0, 50 + navButtonHeight);
-    textFont(font30, 30);
-    text(daysOfWeekFull[testCal.get(Calendar.DAY_OF_WEEK)-1], 0, 80 + navButtonHeight);
+    textFont(font40, 40);
+    text(months[testCal.get(Calendar.MONTH)] + " " + testCal.get(Calendar.DAY_OF_MONTH) + ", " + testCal.get(Calendar.YEAR), 18, 50 + navButtonHeight);
+    textFont(font24, 24);
+    text(daysOfWeekFull[testCal.get(Calendar.DAY_OF_WEEK)-1], 15, 80 + navButtonHeight);
   } 
   else if (layout == 3) { // year
     //System.out.println(testCal.get(Calendar.YEAR));
@@ -138,6 +142,13 @@ void drawDay() {
   drawTimeLabels( sideMonthWidth + 20, HEADER_HEIGHT);  
   fill(255);
   day.display();
+  
+  dayY += 30;
+  // joyce wu one: the focused event of the day is dayFocusEvent. the logic behind which event is
+  // day focus event should be right, unless it's wrong (msg me). basic info about event is
+  // be written here.
+  textFont(fontbold15, 15);
+  text( dayFocusEvent.name, dayX, dayY );
 } 
 
 void drawWeek() {
@@ -447,6 +458,9 @@ void keyPressed() {
 }
 
 void showFocusedEvent() {
+  if (layout == 2) {
+    dayFocusEvent = focusedEvent;
+  }
   // make the event brighter?
   // then,
   println(focusedEvent);

@@ -183,9 +183,11 @@ class Day {
       }
       int allDayY = relY - 3 * boxHeight;
       int allDayEvents = 0;
-      for (int i = 0; i < todayEvents.size(); i++) {
+      for (int i = 0; i < todayEvents.size(); i++) {        
         Event e = todayEvents.get( i );
-        
+        if (i == 0) {
+          dayFocusEvent = e;
+        }
         if (e.getType() == 0) {
           fill(220, 240, 210); // pale green
         } else if (e.getType() == 1) {
