@@ -156,7 +156,38 @@ void drawDay() {
   dayY += 30;
   textFont(font15, 15);
   text(months[dayFocusEvent.month] + " " + dayFocusEvent.date, dayX, dayY);
-  text(dayFocusEvent.startTime + " to " + (dayFocusEvent.startTime + dayFocusEvent.duration), sideMonthWidth - 90, dayY);
+  String startTime = dayFocusEvent.getFormattedStartTime();
+  String noon = startTime.substring(startTime.length()-1);
+  int hourPassed = dayFocusEvent.duration / 60;
+  int minPassed = dayFocusEvent.duration % 60;
+  int newHour = Integer.parseInt(startTime.substring(0, startTime.indexOf(":"))) + hourPassed;
+  int newMin = Integer.parseInt(startTime.substring(startTime.indexOf(":") + 1, startTime.length() - 1)) + minPassed;
+  if(newMin > 59){
+    newMin = newMin - 60;
+    newHour += 1;
+  }
+  if(newHour > 12){
+    newHour = newHour - 12;
+    if(noon.equals("a")){
+      noon = "p";
+    }else if(noon.equals("p")){
+      noon = "a";
+    }
+  }
+  
+  if(newHour == 24){
+    newHour = 12;
+  }
+  
+  String endTime;
+  if(newMin == 0){
+    endTime = newHour + ":00" + noon;
+  }else if(newMin < 10){
+    endTime = newHour + "0" + newMin + noon;
+  }else{
+    endTime = newHour + ":" + newMin + noon;
+  }
+  text(dayFocusEvent.getFormattedStartTime() + " to " + endTime, sideMonthWidth - 120, dayY);
   dayY += 20;
   fill(200);
   stroke(200);
