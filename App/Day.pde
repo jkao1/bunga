@@ -221,7 +221,9 @@ class Day {
           textFont( fontbold15, 15);
           text( e.name, textX, relY + e.startTime * boxHeight / 60.0 + 2 * boxHeight - 5); // first is the name
           textFont( font15, 15);
-          text( e.getFormattedLocation(), textX, relY + e.startTime * boxHeight / 60.0 + 3 * boxHeight - 5); // first is the name
+          if (e.location != null) {
+            text( e.getFormattedLocation(), textX, relY + e.startTime * boxHeight / 60.0 + 3 * boxHeight - 5); // first is the name
+          }
         } 
         else if ( e.duration / 60.0 >= 2 ) { // if two slots, then put time and name
           textFont( font15, 15);          

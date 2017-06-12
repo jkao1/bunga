@@ -71,7 +71,7 @@ void setup() {
   testCal = Calendar.getInstance();
   
   helper = new Helper(this);
-  Month(0);
+  Day(0);
   
 }
 
@@ -132,8 +132,8 @@ void drawDay() {
   fill(230);
   rect(dayX, dayY, sideMonthWidth, HEADER_HEIGHT + CAL_HEIGHT);
   fill(0);
-  dayX += sideMonthWidth / 4;
-  dayY += 40;
+  dayX += 30;
+  dayY += 30;
   drawSmallMonth( dayX, dayY, false );
   drawTimeLabels( sideMonthWidth + 20, HEADER_HEIGHT);  
   fill(255);
@@ -449,7 +449,86 @@ void keyPressed() {
 void showFocusedEvent() {
   // make the event brighter?
   // then,
-  println(focusedEvent);  helper.showFocusedEvent();
+  println(focusedEvent);
+  JDialog.setDefaultLookAndFeelDecorated(true);
+  Object[] selectionValues = { "Name", "Date", "Start Time", "Duration", "Description", "Type" };
+  String initialSelection = "Name";
+  Object selection = JOptionPane.showInputDialog(null, "Modify:",
+      "Editing " + focusedEvent.name, JOptionPane.QUESTION_MESSAGE, null, selectionValues, initialSelection);
+  if (selection != null) {
+    String choice = selection.toString();
+    String input;
+    if ( choice.equals("Name") ) {
+      input = JOptionPane.showInputDialog("Original name: " + focusedEvent.name + 
+                                          "\nNew name:");
+      if (input != null) {
+        focusedEvent.name = input;
+      }
+    } else if (choice.equals("Date")) {
+      input = JOptionPane.showInputDialog("Original date: " + focusedEvent.toString(false) +
+                                          "\nNew date (in mm/dd/yyyy format):");
+      try {
+        if (input != null) {
+          String[] segments = input.split("/");
+          focusedEvent.month = Integer.parseInt(segments[0]);
+          focusedEvent.date = Integer.parseInt(segments[1]);
+          focusedEvent.year = Integer.parseInt(segments[2]);
+          println("focusedEvent " + focusedEvent + " has been moved.");
+        }
+      } catch (NumberFormatException e) {
+        JFrame parent = new JFrame();
+        JOptionPane.showMessageDialog(parent, "Entered date should time was not in mm/dd/yyyy format.");
+      }
+    } else if (choice.equals("Start Time")) {
+      input = JOptionPane.showInputDialog("Original start time: " + focusedEvent.getFormattedStartTime() +
+                                          "\nNew start time (in hh:mm format):");
+      try {
+        if (input != null) {
+          String[] segments = input.split(":");
+          int hour = Integer.parseInt(segments[0]);
+          int minutes = Integer.parseInt(segments[1]);
+          focusedEvent.startTime = hour * 60 + minutes;
+        }
+      } catch (NumberFormatException e) {
+        JFrame parent = new JFrame();
+        JOptionPane.showMessageDialog(parent, "Entered start time was not in hh:mm format.");
+      }                                    
+    } else if (choice.equals("Duration")) {
+      input = JOptionPane.showInputDialog("Original duration: " + focusedEvent.duration +
+                                          "\nNew duration:");
+      try {
+        if (input != null) {
+          focusedEvent.duration = Integer.parseInt(input);
+        }
+      } catch (NumberFormatException e) {
+        JFrame parent = new JFrame();
+        JOptionPane.showMessageDialog(parent, "Entered duration was not an integer.");
+      }
+    } else if (choice.equals("Description")) {
+      input = JOptionPane.showInputDialog("Original description: " + focusedEvent.description +
+                                          "\nNew description:");
+      if (input != null) {
+        focusedEvent.description = input;
+      }
+    } else if (choice.equals("Type")) {
+      Object[] selectionVals = { "School", "Work", "Extra Curricular", "Miscellaneous" };
+      String initSelection = "School";
+      Object choiice = JOptionPane.showInputDialog(null, "Type of Event",
+          "Editing " + focusedEvent.name, JOptionPane.QUESTION_MESSAGE, null, selectionVals, initSelection);
+      input = choiice.toString();
+      int i = 0;
+      for (int j = 0; j < selectionVals.length; j++) {
+        if (selectionVals[j].toString().equals(input)) {
+          i = j;
+          break;
+        }
+      }
+      focusedEvent.type = i;
+    }
+  }
+  if (layout == 0) Month(0);
+  if (layout == 1) Week(0);
+  if (layout == 2) Day(0);
 }
 
 public void Day(int value) {

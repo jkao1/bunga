@@ -11,7 +11,7 @@ class Helper extends PApplet {
   Helper(PApplet pApplet) {
     cp5 = new ControlP5(pApplet);    
     makeButtons();
-    PApplet.runSketch(new String[] {this.getClass().getSimpleName()}, this);    
+    //PApplet.runSketch(new String[] {this.getClass().getSimpleName()}, this);    
   }
 
   void settings() {
