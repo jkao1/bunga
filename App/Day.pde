@@ -373,10 +373,6 @@ class Day {
     return false;
   }
   
-  boolean isDate(Date d) {
-    return year == d.getYear() && month == d.getMonth() && date == d.getDay();
-  }
-  
   int getYear() {
     return year;
   }
