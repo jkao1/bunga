@@ -1,15 +1,13 @@
 # calendar-wu
 Why is the font so blurry? :(
 ## Bugs
-- duplicate events from input file do not work
 - after a while, the time line will sweep a portion of the drawing. <img src=“bugs/timesweep.png”>. 
 - adjusting date for an event will not work graphically
-- description does not save after being edited for an event
-
+- in the DAY layout, clicking on an event in the timeline should automatically update the sidebar. However, the sidebar will not update until the event is updated
 ## Features
 - displays days within any given month and year in a grid
-- EventCollection stores events
-- previous, today, next buttons can show previous and future days/weeks/months/year
+- a BST to get events at lightning speeds
+- previous & next buttons can show previous and future days/weeks/months/year
 - today always returns user to current day/week/month/year
 
 ## Log
