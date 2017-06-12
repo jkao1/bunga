@@ -41,7 +41,7 @@ public class MyBST {
         line.useDelimiter(",");            
         String name;
         int year, month, date;
-        String description =  "";
+        String description =  "No description";
         int duration = 60;
         int type = (int) (Math.random() * 4);
         int startTime = 0;

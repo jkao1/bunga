@@ -23,7 +23,6 @@ class Day {
   
   void display() {
     todayEvents = events.findEvents( year, month, date );
-    
     this.dayNum = dayNum; // used for position tracking
     this.col = col; // used for text colors
 
@@ -51,7 +50,7 @@ class Day {
       
       if( year == todayCal.get( Calendar.YEAR ) && month == todayCal.get( Calendar.MONTH ) && date == todayCal.get( Calendar.DATE )){
         fill(255, 0, 0);
-        stroke(255);
+        
         if (date < 10) { 
           ellipse(xpos + CAL_WIDTH / 7 - 20 + 5, ypos + 30 - 8, 24, 24);
         }else{
@@ -111,12 +110,10 @@ class Day {
       for(int hour = 0; hour < 24; hour++){
         rect(relX, relY + hour * boxHeight, boxWidth, boxHeight);
       }
-      
-      int allDayY = relY;
+      int allDayY = relY - 3 * boxHeight;
       int allDayEvents = 0;
       for (int i = 0; i < todayEvents.size(); i++) {
         Event e = todayEvents.get( i );
-        
         if (e.getType() == 0) {
           fill(220, 240, 210); // pale green
         } else if (e.getType() == 1) {
@@ -125,21 +122,27 @@ class Day {
           fill(210, 220, 210); // dark green
         }
         
+        textFont( fontbold15, 15);
+        int textX = relX + 10;
         if (e.duration == 1440) {
-          if (allDayEvents == 2) {
-            text("more...", relX + 10, allDayY);
+          if (allDayEvents == 3) {
+            fill(255);
+            rect(relX, allDayY - boxHeight, boxWidth, boxHeight);
+            textFont(font12, 12);
+            fill(0);
+            text("more...", relX + 10, allDayY - 5);
           } else {
             rect(relX, allDayY, boxWidth, boxHeight);
+            fill(0);
+            text( e.name, textX, allDayY + boxHeight- 5); // first is the name
             allDayY += boxHeight;
             allDayEvents++;
           }
           continue;
         }
         rect(relX, relY + e.startTime / 60.0 * boxHeight, boxWidth, e.duration / 60.0 * boxHeight);
-        textFont( fontbold15, 15);
         fill( 0 );
         
-        int textX = relX + 10;
         if ( e.duration / 60.0 >= 4 ) { // if four slots, then put time and name and address
           textFont( font15, 15);          
           text( e.getFormattedStartTime(), textX, relY + e.startTime * boxHeight/ 60.0 + boxHeight - 5); // start time
@@ -163,63 +166,26 @@ class Day {
       fill(188);
       //rect(55, HEADER_HEIGHT + 18 + boxHeight, CAL_WIDTH - 75, 5);      
     } else if (layout == 2 ){ // day layout
-      textFont(font24, 15);
-      ypos = navButtonHeight + 55;
-      int sideMonth = 300;
-      xpos = sideMonth;
-      int yChange = (CAL_HEIGHT - ypos) / 25;
-      int xChange = CAL_WIDTH - sideMonth - 40;
-
-      String noon = " AM";
-      for(int n = 0; n <= 1; n++){
-        if(n == 0){
-          fill(0);
-          text("12 AM", xpos, ypos + yChange);
-          fill(255);
-          ypos += yChange;
-        }else if(n == 1){
-          fill(0);
-          text(" 12 PM", xpos, ypos + yChange);
-          fill(255);
-          ypos += yChange;
-          noon = " PM";
-        } 
-        for(int t = 1; t < 12; t++){
-          fill(0);
-          if(t < 10){
-            text("   " + t + noon, xpos, ypos + yChange);
-          }else{
-            text(" " + t + noon, xpos, ypos + yChange);
-          }
-          fill(255);
-          ypos += yChange;
-        }
-      }
       
-      ypos = navButtonHeight + 50;
+      textFont(font24, 15);
       stroke(226);
       fill(255);
-      rect(xpos + 50, ypos - yChange, xChange, 2 * yChange);
-      fill(0);
-      text("all-day", xpos, ypos );
-      ypos += yChange;
-      fill(247);
-      for(int t = 0; t < 24; t++){
-        rect(xpos + 50, ypos, xChange, yChange);
-        ypos += yChange;
-      }
-      fill(188);
-      rect(xpos + 45, navButtonHeight + 45 + yChange, xChange + 50, 5);
+      int relX = sideMonthWidth + 3 * labelWidth / 2;
+      int relY = HEADER_HEIGHT;
+      int originalBoxWidth = boxWidth;
+      boxWidth = CAL_WIDTH - relX - 20;
+      rect(relX, relY, boxWidth, 3 * boxHeight); // the all-day box
       
-      //draws event; Event needs a time variable
-      ypos = navButtonHeight + 50;
-      for (int eventNum = 0; eventNum < todayEvents.size(); eventNum++ ) {
-        Event e = todayEvents.get( eventNum );
-        if ( eventNum > 2 ) {
-          fill(0);
-          text( todayEvents.size() - eventNum + " more...", xpos + 45, ypos + 14);
-          break;
-        }
+      relY += 3 * boxHeight;
+      fill(247);
+      for(int hour = 0; hour < 24; hour++){
+        rect(relX, relY + hour * boxHeight, boxWidth, boxHeight);
+      }
+      int allDayY = relY - 3 * boxHeight;
+      int allDayEvents = 0;
+      for (int i = 0; i < todayEvents.size(); i++) {
+        Event e = todayEvents.get( i );
+        
         if (e.getType() == 0) {
           fill(220, 240, 210); // pale green
         } else if (e.getType() == 1) {
@@ -227,20 +193,49 @@ class Day {
         } else {
           fill(210, 220, 210); // dark green
         }
-        rect(xpos + 45 + 2, ypos + 2, xChange - 4, 15);
-        fill(0);
-        // write the event
-        text(e.toString(), xpos + 45 + 5, ypos + 4);
-        ypos += 15;
-      }      
-            
-      Date d = new Date();
-      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-      int currentHour = Integer.parseInt(dateFormat.format(d).substring(11, 13));
-      int currentMin = Integer.parseInt(dateFormat.format(d).substring(14, 16));
-      fill(181, 63, 63);
-      rect(xpos + 50, ((1 + currentHour) * yChange) + navButtonHeight + 55 + ((currentMin / 60.) * yChange), xChange, 3);
-      
+        textFont( fontbold15, 15);
+        int textX = relX + 10;
+        if (e.duration == 1440) {
+          if (allDayEvents == 3) {
+            fill(255);
+            rect(relX, allDayY - boxHeight, boxWidth, boxHeight);
+            textFont(font12, 12);
+            fill(0);
+            text("more...", relX + 10, allDayY - 5);
+          } else {
+            rect(relX, allDayY, boxWidth, boxHeight);
+            fill(0);
+            text( e.name, textX, allDayY + boxHeight- 5); // first is the name
+            allDayY += boxHeight;
+            allDayEvents++;
+          }
+          continue;
+        }
+        rect(relX, relY + e.startTime / 60.0 * boxHeight, boxWidth, e.duration / 60.0 * boxHeight);
+        textFont( fontbold15, 15);
+        fill( 0 );
+        
+        if ( e.duration / 60.0 >= 4 ) { // if four slots, then put time and name and address
+          textFont( font15, 15);          
+          text( e.getFormattedStartTime(), textX, relY + e.startTime * boxHeight/ 60.0 + boxHeight - 5); // start time
+          textFont( fontbold15, 15);
+          text( e.name, textX, relY + e.startTime * boxHeight / 60.0 + 2 * boxHeight - 5); // first is the name
+          textFont( font15, 15);
+          text( e.getFormattedLocation(), textX, relY + e.startTime * boxHeight / 60.0 + 3 * boxHeight - 5); // first is the name
+        } 
+        else if ( e.duration / 60.0 >= 2 ) { // if two slots, then put time and name
+          textFont( font15, 15);          
+          text( e.getFormattedStartTime(), textX, relY + e.startTime * boxHeight / 60.0 + boxHeight - 5); // start time
+          textFont( fontbold15, 15);
+          text( e.name, textX, relY + e.startTime * boxHeight / 60.0 + 2 * boxHeight - 5); // first is the name
+        } 
+        else if (e.duration / 60.0 < 2 ) {
+          text( e.name, textX, relY + e.startTime * boxHeight / 60.0 + boxHeight - 5); // first is the name
+        } 
+        
+      }
+      boxWidth = originalBoxWidth;
+      fill(188);
     }
   }
   
@@ -254,15 +249,19 @@ class Day {
     } else if (layout == 1) {
       String eventName = JOptionPane.showInputDialog("Event Name:");
       if (eventName != null && eventName.length() > 0) {
-        events.insert( new Event( eventName, year, month, date, 120, "", 0, getStartTime() ));
+        int duration = 120; // default
+        if (mouseY - HEADER_HEIGHT < 3 * boxHeight) {
+          duration = 1440; // all day
+        }
+        events.insert( new Event( eventName, year, month, date, duration, "", 0, getStartTime() ));
       }
     }
   }
   
   int getStartTime() {
     int relY = mouseY - HEADER_HEIGHT - 3 * boxHeight;
-    if (relY < 0) {
-      return 1440;
+    if (relY <= 0) { // in all day
+      return 0;
     }
     return relY * 60 / boxHeight;
   }
@@ -313,11 +312,24 @@ class Day {
   }
   
   boolean tryEditingEvent() {
-    if (layout == 1) {
+    if (layout == 1) { // week
+      int allDayEvents = 0;
       for (Event e : todayEvents) {
         int relY = HEADER_HEIGHT;
-        if (mouseY >= HEADER_HEIGHT + 3 * boxHeight + boxHeight * e.startTime / 60.0 && 
-            mouseY <= HEADER_HEIGHT + 3 * boxHeight + boxHeight * e.startTime / 60.0 + e.duration / 60.0 * boxHeight) {
+        if (e.duration == 1440) {
+          allDayEvents++;
+          if (mouseY >= HEADER_HEIGHT + (allDayEvents - 1) * boxHeight && 
+              mouseY <= HEADER_HEIGHT + allDayEvents * boxHeight) {
+            String newName = JOptionPane.showInputDialog("New name for event " + e);
+            if (newName != null) {
+              e.setName(newName);
+            }
+            return true;
+          }
+        }
+        else if (mouseY >= HEADER_HEIGHT + 3 * boxHeight + boxHeight * e.startTime / 60.0 && 
+                 mouseY <= HEADER_HEIGHT + 3 * boxHeight + boxHeight * e.startTime / 60.0 + 
+                           e.duration / 60.0 * boxHeight) {
           String newName = JOptionPane.showInputDialog("New name for event " + e);
           if (newName != null) {
             e.setName(newName);
@@ -325,6 +337,9 @@ class Day {
           return true;
         }
       }
+    }
+    if (layout == 2) { // day
+    
     }
     return false;
   }

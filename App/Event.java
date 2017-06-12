@@ -86,7 +86,8 @@ public class Event implements Comparable<Event> {
     }
     
     public String toString() { // DO NOT CHANGE, THIS IS FOR FILE WRITING
-        return name + "," + year + "," + month + "," + date + ',' + duration + ',' + description + ',' + type + ',' + startTime;
+        return name + "," + year + "," + month + "," + date + ',' + duration + ',' + 
+        description + ',' + type + ',' + startTime;
     }
     
     public String toString(boolean b) {
