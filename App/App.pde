@@ -187,7 +187,7 @@ void drawDay() {
   }else{
     endTime = newHour + ":" + newMin + noon;
   }
-  text(dayFocusEvent.getFormattedStartTime() + " to " + endTime, sideMonthWidth - 120, dayY);
+  text(dayFocusEvent.getFormattedStartTime() + " to " + endTime, sideMonthWidth - 125, dayY);
   dayY += 20;
   fill(200);
   stroke(200);
@@ -197,7 +197,15 @@ void drawDay() {
   if(dayFocusEvent.description.length() == 0){
     text("No description available.", dayX, dayY);
   }else{
-    text(dayFocusEvent.description, dayX, dayY);
+    int i = 0;
+    while(i < dayFocusEvent.description.length() / 45){
+      String line = dayFocusEvent.description.substring(i * 45, (i+1) * 45 );
+      text(line, dayX, dayY);
+      dayY += 25;
+      i++;
+    }
+    String remainingText = dayFocusEvent.description.substring(i * 45);
+    text(remainingText, dayX, dayY);
   }
 } 
 
