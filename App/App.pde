@@ -149,9 +149,25 @@ void drawDay() {
   // be written here.
   
   // String name, int year, int month, int date, int duration, String description, int type, int startTime
-
-  textFont(fontbold15, 15);
+  dayY = sideMonthWidth - 20;
+  fill(0);
+  textFont(fontbold15, 18);
   text( dayFocusEvent.name, dayX, dayY );
+  dayY += 30;
+  textFont(font15, 15);
+  text(months[dayFocusEvent.month] + " " + dayFocusEvent.date, dayX, dayY);
+  text(dayFocusEvent.startTime + " to " + (dayFocusEvent.startTime + dayFocusEvent.duration), sideMonthWidth - 90, dayY);
+  dayY += 20;
+  fill(200);
+  stroke(200);
+  rect(dayX, dayY, sideMonthWidth - 30 - 15, 1);
+  dayY += 25;
+  fill(0);
+  if(dayFocusEvent.description.length() == 0){
+    text("No description available.", dayX, dayY);
+  }else{
+    text(dayFocusEvent.description, dayX, dayY);
+  }
 } 
 
 void drawWeek() {
