@@ -6,11 +6,6 @@ public class MyBST {
 
     private Node root;
     
-    public static void main(String[] args) {
-        MyBST b = new MyBST( args[0] );
-        System.out.println( b.getAllEvents());
-    }
-
     public MyBST() {
         root = null;
     }

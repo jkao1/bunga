@@ -29,7 +29,6 @@ class Helper extends PApplet {
   }
 
   void mousePressed() {
-    println("mousePressed in Helper");
   }
   
   void makeButtons() {

@@ -143,10 +143,13 @@ void drawDay() {
   fill(255);
   day.display();
   
-  dayY += 30;
+  dayY += 300;
   // joyce wu one: the focused event of the day is dayFocusEvent. the logic behind which event is
   // day focus event should be right, unless it's wrong (msg me). basic info about event is
   // be written here.
+  
+  // String name, int year, int month, int date, int duration, String description, int type, int startTime
+
   textFont(fontbold15, 15);
   text( dayFocusEvent.name, dayX, dayY );
 } 
@@ -280,7 +283,6 @@ void drawYear() {
   }
   
   int currentYear = testCal.get( Calendar.YEAR );
-  //System.out.println(originalYear + " " + currentYear);
   int currentMonth = testCal.get( Calendar.MONTH );
   int currentDate = testCal.get( Calendar.DATE );
   testCal.add( Calendar.YEAR, originalYear - currentYear ); 
@@ -410,8 +412,8 @@ String getTime() {
   
 
 void mousePressed() {
-  Day editMe;
   if (mouseY > HEADER_HEIGHT) {
+    Day editMe;
     if (layout == 0) {
       int calCol = mouseX / (CAL_WIDTH / 7);
       int calRow = (mouseY - HEADER_HEIGHT) / ((CAL_HEIGHT)/ 6);
@@ -422,8 +424,13 @@ void mousePressed() {
         if (mouseButton == RIGHT) {   
           editMe.editEvent(false);
         } else {
-          focusedEvent = editMe.editEvent(true);
-          showFocusedEvent();
+          Event e = editMe.editEvent(true);
+          if (e.name.indexOf("BAD") < 0) {
+            focusedEvent = e;
+            showFocusedEvent();
+          } else {
+            return;
+          }
         }
       } else {
         editMe.newEventWindow();
@@ -439,10 +446,8 @@ void mousePressed() {
       editMe.display();
     }
     if (layout == 2 && mouseX >= sideMonthWidth + 3 * labelWidth / 2) {
-      println("in bounds");
       editMe = days.get( days.size() - 1 );        
       if ( !editMe.tryEditingEvent() ) {
-        println("new event");
         editMe.newEventWindow();
       }
       editMe.display();
@@ -463,9 +468,9 @@ void showFocusedEvent() {
   }
   // make the event brighter?
   // then,
-  println(focusedEvent);
+
   JDialog.setDefaultLookAndFeelDecorated(true);
-  Object[] selectionValues = { "Name", "Date", "Start Time", "Duration", "Description", "Type" };
+  Object[] selectionValues = { "Name", "Date", "Start Time", "Duration", "Description", "Type", "Location" };
   String initialSelection = "Name";
   Object selection = JOptionPane.showInputDialog(null, "Modify:",
       "Editing " + focusedEvent.name, JOptionPane.QUESTION_MESSAGE, null, selectionValues, initialSelection);
@@ -487,7 +492,6 @@ void showFocusedEvent() {
           focusedEvent.month = Integer.parseInt(segments[0]);
           focusedEvent.date = Integer.parseInt(segments[1]);
           focusedEvent.year = Integer.parseInt(segments[2]);
-          println("focusedEvent " + focusedEvent + " has been moved.");
         }
       } catch (NumberFormatException e) {
         JFrame parent = new JFrame();
@@ -538,11 +542,30 @@ void showFocusedEvent() {
         }
       }
       focusedEvent.type = i;
+    } else if (choice.equals("Location")) {
+      input = JOptionPane.showInputDialog("Original location: " + focusedEvent.location +
+                                          "\nNew location (PO box standard format)\n" +
+                                          "ex. \"345 Chambers St,New York,NY,10282\":");
+      try {
+        if (input != null) {
+          String[] segments = input.split(",");
+          focusedEvent.location = new Location( segments[0], segments[1], segments[2], segments[3] );
+        }
+      } catch (IndexOutOfBoundsException e) {
+        JFrame parent = new JFrame();
+        JOptionPane.showMessageDialog(parent, "Entered start time was not in the correct format.");
+      }
     }
   }
   if (layout == 0) Month(0);
   if (layout == 1) Week(0);
   if (layout == 2) Day(0);
+}
+
+void adjustCal(int year, int month, int date) {
+  testCal.add( Calendar.YEAR, year - testCal.get( Calendar.YEAR ) );
+  testCal.add( Calendar.MONTH, month - testCal.get( Calendar.MONTH ) );
+  testCal.add( Calendar.DATE, date - testCal.get( Calendar.DATE ) );
 }
 
 public void Day(int value) {

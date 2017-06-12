@@ -3,9 +3,9 @@ public class Location {
     private String streetAddress;
     private String city;
     private String state; // two letters
-    private int zipcode;
+    private String zipcode;
 
-    public Location(String streetAddress, String city, String state, int zipcode)
+    public Location(String streetAddress, String city, String state, String zipcode)
     {
         this.streetAddress = streetAddress;
         this.city = city;

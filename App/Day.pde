@@ -268,7 +268,6 @@ class Day {
         }
         Event e = new Event( eventName, year, month, date, duration, "", 0, getStartTime() );
         events.insert( e );
-        println(e);
       }
     }
   }
@@ -315,7 +314,13 @@ class Day {
       while (ypos + 35 + eventNumber * (MONTH_EVENT_HEIGHT) < mouseY) {
         eventNumber++;
       }    
-      editMe = todayEvents.get(--eventNumber);
+      eventNumber -= 1;
+      editMe = todayEvents.get(eventNumber);
+      if (eventNumber >= 3) {
+        adjustCal( editMe.year, editMe.month, editMe.date);
+        drawDay();
+        return new Event("END EARLY BAD EVENT", -1, -1, -1);
+      }      
       if (callHelper) {
         return editMe;
       }
@@ -328,7 +333,6 @@ class Day {
   }
   
   boolean tryEditingEvent() {
-    println("checking event");
     if (layout == 1 || layout == 2) { // week
       int allDayEvents = 0;
       for (Event e : todayEvents) {
