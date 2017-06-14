@@ -3,6 +3,7 @@
 # bunga
 ## Bugs
 - works on Mac, but for some reason, during our demo, a few sections of week were not showing up.
+- the header for WEEK layout shows the incorrect day labels.
 - in the DAY layout, clicking on an event in the timeline should automatically update the sidebar. However, the sidebar will not update until the event is updated
 
 ## Features
