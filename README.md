@@ -3,14 +3,27 @@
 # bunga
 ## Bugs
 - works on Mac, but for some reason, during our demo, a few sections of week were not showing up.
-- after a while, the time line will sweep a portion of the drawing. <img src=“bugs/timesweep.png”>. 
-- adjusting date for an event will not work graphically
 - in the DAY layout, clicking on an event in the timeline should automatically update the sidebar. However, the sidebar will not update until the event is updated
+
 ## Features
-- displays days within any given month and year in a grid
-- a BST to get events at lightning speeds
-- previous & next buttons can show previous and future days/weeks/months/year
-- today always returns user to current day/week/month/year
+A.	All layouts. 
+1.	add any number of events on any number of days by clicking on the box a day belongs to.
+2.	modify events’ name, date, duration, description, and location by clicking on an event box
+3.	use Previous, Next, and Today buttons to determine which interval of days to show
+4.	a red circle will show which date is the current one. 
+
+B.	Week Layout
+1.	display events not only by date but by time
+2.	red time line shows the current time. 
+
+C.	Day Layout
+1.	display events by time, has red time line
+2.	small mini calendar in the left sidebar shows the date with perspective to its entire month
+3.	sidebar shows specific details about the event last modified (by default it shows the earliest event of the day). 
+D.	Year Layout
+1.	no event modification ability
+2.	shows the entire year with twelve blocks representing the months
+
 
 ## Log
 - 6/4
