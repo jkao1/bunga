@@ -1,6 +1,7 @@
-## USES CONTROLP5 LIBRARY!!
-
 # bunga
+Calendar application with chronic sections. Written in Processing Java. Edit
+Add topics
+
 ## Bugs
 - works on Mac, but for some reason, during our demo, a few sections of week were not showing up.
 - the header for WEEK layout shows the incorrect day labels.
